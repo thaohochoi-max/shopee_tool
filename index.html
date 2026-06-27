@@ -128,7 +128,20 @@
 </div>
 <footer>Thảo Thỏ - Deal Shopee</footer>
 <div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyDEqqAjF-vz9QJ6815etGtssom0QcEU2hk",
+    authDomain: "thaotho-shopee.firebaseapp.com",
+    projectId: "thaotho-shopee",
+    storageBucket: "thaotho-shopee.firebasestorage.app",
+    messagingSenderId: "506824479928",
+    appId: "1:506824479928:web:966ae2c83006182f0ad04d"
+  });
+  const db = firebase.firestore();
+
   const _aid = '17332610461';
   const _sid = 'facebook';
   const URL_RX = /(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/gi;
@@ -147,18 +160,17 @@
       + '&sub_id=' + _sid;
   }
 
-  function logConversion(originUrl, affiliateLink) {
-    const records = JSON.parse(localStorage.getItem('tt_conversions') || '[]');
-    records.unshift({
-      id: Date.now(),
-      time: new Date().toISOString(),
-      origin: originUrl,
-      affiliate: affiliateLink,
-      channel: _sid,
-      commission: '',
-      note: ''
-    });
-    localStorage.setItem('tt_conversions', JSON.stringify(records.slice(0, 500)));
+  async function logConversion(originUrl, affiliateLink) {
+    try {
+      await db.collection('conversions').add({
+        time: firebase.firestore.FieldValue.serverTimestamp(),
+        origin: originUrl,
+        affiliate: affiliateLink,
+        channel: _sid,
+        commission: '',
+        note: ''
+      });
+    } catch(e) { console.warn('Log error:', e); }
   }
 
   async function pasteLink() {
@@ -178,7 +190,7 @@
     err.classList.remove('show'); res.classList.remove('show');
     if (!text) { err.textContent = '⚠️ Vui lòng dán link Shopee trước.'; err.classList.add('show'); return; }
     const url = _xu(text);
-    if (!url) { err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ. Hãy kiểm tra lại.'; err.classList.add('show'); return; }
+    if (!url) { err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ.'; err.classList.add('show'); return; }
     const link = _bl(url);
     document.getElementById('resultBox').textContent = link;
     res.classList.add('show');
