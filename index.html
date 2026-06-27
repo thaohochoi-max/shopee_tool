@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shopee HoĂ n Tiá»n</title>
+  <title>Thảo Thỏ - Deal Shopee</title>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -132,9 +132,7 @@
     }
     .result-box:hover { border-color: rgba(238,77,45,0.5); }
 
-    .action-row {
-      display: flex; gap: 10px;
-    }
+    .action-row { display: flex; gap: 10px; }
 
     .btn-copy { background: var(--green); color: #fff; }
     .btn-copy:hover { background: #16a34a; }
@@ -176,37 +174,37 @@
 
 <div class="card">
   <div class="logo">
-    <div class="logo-icon">đŸ›ï¸</div>
+    <div class="logo-icon">🛍️</div>
     <div class="logo-text">
-      <h1>Shopee HoĂ n Tiá»n</h1>
-      <p>DĂ¡n link â†’ nháº­n cashback & voucher</p>
+      <h1>Thảo Thỏ - Deal Shopee</h1>
+      <p>Dán link → nhận cashback &amp; voucher</p>
     </div>
   </div>
 
-  <textarea id="inputLink" placeholder="DĂ¡n link Shopee vĂ o Ä‘Ă¢y...&#10;VD: https://shopee.vn/... hoáº·c shp.ee/..."></textarea>
+  <textarea id="inputLink" placeholder="Dán link Shopee vào đây...&#10;VD: https://shopee.vn/... hoặc shp.ee/..."></textarea>
 
   <div class="btn-row">
-    <button class="btn btn-paste" onclick="pasteLink()">đŸ“‹ DĂ¡n</button>
-    <button class="btn btn-convert" onclick="convertLink()">â¡ Láº¥y link hoĂ n tiá»n</button>
+    <button class="btn btn-paste" onclick="pasteLink()">📋 Dán</button>
+    <button class="btn btn-convert" onclick="convertLink()">⚡ Lấy link hoàn tiền</button>
   </div>
 
   <div class="error-msg" id="errorMsg"></div>
 
   <div class="result-wrap" id="resultWrap">
-    <p class="result-label">Link hoĂ n tiá»n cá»§a báº¡n</p>
-    <div class="result-box" id="resultBox" onclick="copyLink()" title="Nháº¥n Ä‘á»ƒ sao chĂ©p"></div>
+    <p class="result-label">Link hoàn tiền của bạn</p>
+    <div class="result-box" id="resultBox" onclick="copyLink()" title="Nhấn để sao chép"></div>
     <div class="action-row">
-      <button class="btn btn-copy" onclick="copyLink()">đŸ“‹ Sao chĂ©p</button>
-      <button class="btn btn-open" onclick="openLink()">đŸ›’ Má»Ÿ Shopee</button>
+      <button class="btn btn-copy" onclick="copyLink()">📋 Sao chép</button>
+      <button class="btn btn-open" onclick="openLink()">🛒 Mở Shopee</button>
     </div>
   </div>
 
   <div class="tip">
-    <strong>CĂ¡ch dĂ¹ng:</strong> DĂ¡n link Shopee báº¥t ká»³ (ká»ƒ cáº£ link rĂºt gá»n shp.ee), nháº¥n <strong>Láº¥y link hoĂ n tiá»n</strong> â€” mua hĂ ng qua link Ä‘Ă³ Ä‘á»ƒ nháº­n cashback vĂ  voucher.
+    <strong>Cách dùng:</strong> Dán link Shopee bất kỳ (kể cả link rút gọn shp.ee), nhấn <strong>Lấy link hoàn tiền</strong> — mua hàng qua link đó để nhận cashback và voucher.
   </div>
 </div>
 
-<footer>Shopee HoĂ n Tiá»n Â· Máº­t MĂ£ Tá»± Do</footer>
+<footer>Thảo Thỏ - Deal Shopee</footer>
 
 <div class="toast" id="toast"></div>
 
@@ -236,7 +234,7 @@
       document.getElementById('inputLink').value = t;
     } catch {
       document.getElementById('inputLink').focus();
-      showToast('Nháº¥n Ctrl+V Ä‘á»ƒ dĂ¡n link');
+      showToast('Nhấn Ctrl+V để dán link');
     }
   }
 
@@ -248,12 +246,12 @@
     res.classList.remove('show');
 
     if (!text) {
-      err.textContent = 'â ï¸ Vui lĂ²ng dĂ¡n link Shopee trÆ°á»›c.';
+      err.textContent = '⚠️ Vui lòng dán link Shopee trước.';
       err.classList.add('show'); return;
     }
     const url = _xu(text);
     if (!url) {
-      err.textContent = 'â ï¸ KhĂ´ng tĂ¬m tháº¥y link Shopee há»£p lá»‡. HĂ£y kiá»ƒm tra láº¡i.';
+      err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ. Hãy kiểm tra lại.';
       err.classList.add('show'); return;
     }
     const link = _bl(url);
@@ -266,14 +264,14 @@
     const link = document.getElementById('resultBox').textContent;
     if (!link) return;
     navigator.clipboard.writeText(link)
-      .then(() => showToast('âœ… ÄĂ£ sao chĂ©p!'))
+      .then(() => showToast('✅ Đã sao chép!'))
       .catch(() => {
         const el = document.getElementById('resultBox');
         const r = document.createRange(); r.selectNode(el);
         window.getSelection().removeAllRanges();
         window.getSelection().addRange(r);
         document.execCommand('copy');
-        showToast('âœ… ÄĂ£ sao chĂ©p!');
+        showToast('✅ Đã sao chép!');
       });
   }
 
@@ -293,4 +291,3 @@
 </script>
 </body>
 </html>
-
