@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shopee Hoàn Tiền — Chuyển Link Affiliate</title>
+  <title>Shopee Đường Đua — Convert Link Affiliate</title>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,10 +19,6 @@
       --orange: #ee4d2d;
       --orange2: #d63c1e;
       --green: #22c55e;
-      --blue: #1877f2;
-      --insta: #e1306c;
-      --tiktok: #010101;
-      --zalo: #0068ff;
       --radius: 14px;
     }
 
@@ -49,30 +45,28 @@
     }
 
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 6px;
     }
-
     .logo-icon {
-      width: 44px; height: 44px;
-      background: var(--orange);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
+      width: 44px; height: 44px; background: var(--orange);
+      border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; font-size: 22px;
     }
-
     .logo-text h1 { font-size: 1.2rem; font-weight: 800; }
-    .logo-text p { font-size: 0.78rem; color: var(--text2); margin-top: 2px; }
+    .logo-text p  { font-size: 0.76rem; color: var(--text2); margin-top: 2px; }
+
+    .badge-duadua {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(90deg,#ee4d2d,#f5a623);
+      color: #fff; font-size: 0.72rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 20px;
+      margin-bottom: 24px; margin-top: 10px;
+    }
 
     .section-label {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text2);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 10px;
+      font-size: 0.78rem; font-weight: 600; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;
     }
 
     textarea {
@@ -85,246 +79,174 @@
       font-family: inherit;
       font-size: 0.9rem;
       line-height: 1.5;
-      resize: none;
-      height: 100px;
-      transition: border-color 0.2s;
-      outline: none;
+      resize: none; height: 96px;
+      transition: border-color 0.2s; outline: none;
       margin-bottom: 12px;
     }
-
     textarea:focus { border-color: var(--orange); }
     textarea::placeholder { color: var(--text2); opacity: 0.6; }
 
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+    .paste-btn {
+      width: 100%; padding: 10px;
+      background: var(--dark4); color: var(--text2);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; cursor: pointer;
+      font-family: inherit; font-size: 0.83rem; font-weight: 600;
+      margin-bottom: 22px; transition: background 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .paste-btn:hover { background: #2a2a2a; color: var(--text); }
+
+    /* ── Channel grid ── */
+    .channel-label {
+      font-size: 0.78rem; font-weight: 700; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 12px;
     }
 
-    .btn {
-      flex: 1;
-      min-width: 90px;
-      padding: 11px 14px;
-      border-radius: 10px;
-      border: none;
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .ch-btn {
+      padding: 14px 8px;
+      border-radius: 12px;
+      border: 2px solid transparent;
       cursor: pointer;
       font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 600;
+      font-size: 0.8rem;
+      font-weight: 700;
       transition: all 0.18s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      text-decoration: none;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 7px;
+      background: var(--dark3);
+      color: var(--text2);
     }
 
-    .btn-paste {
-      background: var(--dark4);
+    .ch-btn .ch-icon { font-size: 1.4rem; line-height: 1; }
+
+    .ch-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+    .ch-btn.active {
+      border-color: var(--orange);
+      background: rgba(238,77,45,0.12);
       color: var(--text);
-      border: 1px solid rgba(255,255,255,0.1);
     }
-    .btn-paste:hover { background: #2e2e2e; }
 
-    .btn-convert {
-      background: var(--orange);
-      color: #fff;
+    .ch-btn[data-ch="facebook"].active   { border-color:#1877f2; background:rgba(24,119,242,0.12); }
+    .ch-btn[data-ch="instagram"].active  { border-color:#e1306c; background:rgba(225,48,108,0.12); }
+    .ch-btn[data-ch="tiktok"].active     { border-color:#69c9d0; background:rgba(105,201,208,0.12); }
+    .ch-btn[data-ch="zalo"].active       { border-color:#0068ff; background:rgba(0,104,255,0.12); }
+    .ch-btn[data-ch="youtube"].active    { border-color:#ff0000; background:rgba(255,0,0,0.12); }
+    .ch-btn[data-ch="website"].active    { border-color:var(--green); background:rgba(34,197,94,0.12); }
+
+    /* ── Convert button ── */
+    .convert-btn {
+      width: 100%; padding: 15px;
+      background: var(--orange); color: #fff;
+      border: none; border-radius: 12px;
+      cursor: pointer; font-family: inherit;
+      font-size: 1rem; font-weight: 800;
+      transition: all 0.18s; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn-convert:hover { background: var(--orange2); transform: translateY(-1px); }
+    .convert-btn:hover { background: var(--orange2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(238,77,45,0.3); }
+    .convert-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
+    /* ── Result ── */
     .error-msg {
       background: rgba(239,68,68,0.1);
       border: 1px solid rgba(239,68,68,0.3);
       border-radius: 10px;
-      padding: 12px 16px;
-      color: #f87171;
-      font-size: 0.85rem;
-      margin-bottom: 14px;
-      display: none;
+      padding: 12px 16px; color: #f87171;
+      font-size: 0.85rem; margin-bottom: 14px; display: none;
     }
     .error-msg.show { display: block; }
 
     .result-wrap { display: none; }
     .result-wrap.show { display: block; }
 
+    .result-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px;
+    }
+    .result-header .ch-tag {
+      font-size: 0.72rem; font-weight: 700;
+      padding: 3px 9px; border-radius: 20px;
+      background: rgba(238,77,45,0.15);
+      color: var(--orange); border: 1px solid rgba(238,77,45,0.3);
+    }
+
     .result-box {
       background: var(--dark3);
       border: 1px solid rgba(238,77,45,0.3);
       border-radius: var(--radius);
       padding: 14px 16px;
-      font-size: 0.82rem;
-      word-break: break-all;
-      color: var(--text);
-      line-height: 1.6;
-      margin-bottom: 14px;
-      min-height: 56px;
-      cursor: pointer;
-      user-select: all;
+      font-size: 0.8rem; word-break: break-all;
+      color: var(--text); line-height: 1.6;
+      margin-bottom: 12px; min-height: 56px;
+      cursor: pointer; user-select: all;
+      transition: border-color 0.2s;
+    }
+    .result-box:hover { border-color: rgba(238,77,45,0.6); }
+
+    .result-actions {
+      display: flex; gap: 10px; flex-wrap: wrap;
     }
 
-    /* ── Social section ── */
-    .social-title {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--text2);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin: 20px 0 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .social-title::before, .social-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255,255,255,0.06);
-    }
-
-    .social-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .btn-social {
-      padding: 13px 12px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 700;
+    .btn {
+      flex: 1; min-width: 100px;
+      padding: 12px 14px; border-radius: 10px; border: none;
+      cursor: pointer; font-family: inherit;
+      font-size: 0.85rem; font-weight: 700;
       transition: all 0.18s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      color: #fff;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      text-decoration: none; color: #fff;
     }
+    .btn-copy  { background: var(--green); }
+    .btn-copy:hover  { background: #16a34a; }
+    .btn-open  { background: var(--orange); }
+    .btn-open:hover  { background: var(--orange2); }
 
-    .btn-fb   { background: var(--blue); }
-    .btn-fb:hover { background: #1464cc; transform: translateY(-2px); }
-
-    .btn-insta {
-      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    }
-    .btn-insta:hover { opacity: 0.9; transform: translateY(-2px); }
-
-    .btn-tiktok {
-      background: #111;
-      border: 1px solid #333;
-    }
-    .btn-tiktok:hover { background: #222; transform: translateY(-2px); }
-
-    .btn-zalo  { background: var(--zalo); }
-    .btn-zalo:hover { background: #0052cc; transform: translateY(-2px); }
-
-    /* ── Quick actions ── */
-    .quick-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn-copy {
-      background: var(--green);
-      color: #fff;
-    }
-    .btn-copy:hover { background: #16a34a; }
-
-    .btn-open {
-      background: var(--orange);
-      color: #fff;
-    }
-    .btn-open:hover { background: var(--orange2); }
-
-    /* ── Caption modal ── */
-    .caption-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.75);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .caption-overlay.show { display: flex; }
-
-    .caption-card {
-      background: var(--dark2);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 28px 24px;
-      width: 100%;
-      max-width: 480px;
-    }
-
-    .caption-card h3 { font-size: 1rem; margin-bottom: 6px; }
-    .caption-card p { font-size: 0.8rem; color: var(--text2); margin-bottom: 16px; }
-
-    .caption-text {
-      background: var(--dark3);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 14px;
-      font-size: 0.85rem;
-      color: var(--text);
-      line-height: 1.7;
-      white-space: pre-wrap;
-      word-break: break-all;
-      margin-bottom: 16px;
-      cursor: text;
-      user-select: all;
-    }
-
-    .caption-btns { display: flex; gap: 10px; }
-
-    .toast {
-      position: fixed;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--green);
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: transform 0.3s ease;
-      z-index: 999;
-      white-space: nowrap;
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); }
-
-    .tip {
+    /* ── Sub-id info ── */
+    .subid-info {
       margin-top: 18px;
       padding: 12px 16px;
       background: rgba(245,200,66,0.05);
       border: 1px solid rgba(245,200,66,0.15);
       border-radius: 10px;
-      font-size: 0.8rem;
-      color: var(--text2);
-      line-height: 1.6;
+      font-size: 0.79rem; color: var(--text2); line-height: 1.7;
     }
-    .tip strong { color: var(--gold); }
+    .subid-info strong { color: var(--gold); }
+    .subid-info code {
+      background: var(--dark3); padding: 1px 6px;
+      border-radius: 4px; font-size: 0.75rem; color: #e8e8e8;
+    }
+
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--green); color: #fff;
+      padding: 12px 24px; border-radius: 50px;
+      font-weight: 600; font-size: 0.9rem;
+      transition: transform 0.3s ease; z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
     footer {
-      margin-top: 20px;
-      font-size: 0.75rem;
-      color: var(--text2);
-      text-align: center;
-      opacity: 0.5;
+      margin-top: 20px; font-size: 0.72rem;
+      color: var(--text2); text-align: center; opacity: 0.45;
     }
 
     @media (max-width: 420px) {
-      .card { padding: 22px 16px; }
-      .social-grid { grid-template-columns: 1fr 1fr; }
-      .btn-social { font-size: 0.8rem; padding: 11px 8px; }
+      .card { padding: 22px 14px; }
+      .channel-grid { grid-template-columns: repeat(3,1fr); gap: 8px; }
+      .ch-btn { padding: 12px 4px; font-size: 0.73rem; }
     }
   </style>
 </head>
@@ -332,85 +254,88 @@
 
 <div class="card">
   <div class="logo">
-    <div class="logo-icon">🛍️</div>
+    <div class="logo-icon">🏆</div>
     <div class="logo-text">
-      <h1>Shopee Hoàn Tiền</h1>
-      <p>Chuyển link → chia sẻ → nhận cashback & voucher</p>
+      <h1>Shopee Đường Đua</h1>
+      <p>Convert link đúng kênh — bắt chương trình affiliate</p>
     </div>
   </div>
+  <div class="badge-duadua">⚡ Shopee Affiliate · Đường Đua Campaign</div>
 
-  <p class="section-label">Dán link Shopee của bạn</p>
-  <textarea id="inputLink" placeholder="Dán link Shopee vào đây...&#10;VD: https://shopee.vn/product/... hoặc shp.ee/..."></textarea>
+  <p class="section-label">Bước 1 — Dán link Shopee</p>
+  <textarea id="inputLink" placeholder="Dán link Shopee vào đây...&#10;VD: https://shopee.vn/... hoặc shp.ee/..."></textarea>
+  <button class="paste-btn" onclick="pasteLink()">📋 Dán từ clipboard</button>
 
-  <div class="btn-row">
-    <button class="btn btn-paste" onclick="pasteLink()">📋 Dán link</button>
-    <button class="btn btn-convert" onclick="convertLink()">⚡ Lấy link hoàn tiền</button>
+  <p class="channel-label">Bước 2 — Chọn kênh social</p>
+  <div class="channel-grid">
+    <button class="ch-btn" data-ch="facebook" onclick="selectChannel(this)">
+      <span class="ch-icon">📘</span>Facebook
+    </button>
+    <button class="ch-btn" data-ch="instagram" onclick="selectChannel(this)">
+      <span class="ch-icon">📸</span>Instagram
+    </button>
+    <button class="ch-btn" data-ch="tiktok" onclick="selectChannel(this)">
+      <span class="ch-icon">🎵</span>TikTok
+    </button>
+    <button class="ch-btn" data-ch="zalo" onclick="selectChannel(this)">
+      <span class="ch-icon">💬</span>Zalo
+    </button>
+    <button class="ch-btn" data-ch="youtube" onclick="selectChannel(this)">
+      <span class="ch-icon">▶️</span>YouTube
+    </button>
+    <button class="ch-btn" data-ch="website" onclick="selectChannel(this)">
+      <span class="ch-icon">🌐</span>Website
+    </button>
   </div>
+
+  <button class="convert-btn" onclick="convertLink()">
+    ⚡ Convert Link Đường Đua
+  </button>
 
   <div class="error-msg" id="errorMsg"></div>
 
   <div class="result-wrap" id="resultWrap">
-
-    <p class="section-label">Link hoàn tiền</p>
+    <div class="result-header">
+      <p class="section-label" style="margin:0">Link đã convert</p>
+      <span class="ch-tag" id="chTag"></span>
+    </div>
     <div class="result-box" id="resultBox" onclick="copyLink()" title="Nhấn để sao chép"></div>
-
-    <div class="quick-row">
-      <button class="btn btn-copy" onclick="copyLink()">📋 Sao chép</button>
+    <div class="result-actions">
+      <button class="btn btn-copy" onclick="copyLink()">📋 Sao chép link</button>
       <button class="btn btn-open" onclick="openLink()">🛒 Mở Shopee</button>
     </div>
-
-    <div class="social-title">Chia sẻ để nhận voucher</div>
-
-    <div class="social-grid">
-      <button class="btn-social btn-fb" onclick="shareToFacebook()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        Facebook
-      </button>
-
-      <button class="btn-social btn-insta" onclick="shareToInstagram()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-        Instagram
-      </button>
-
-      <button class="btn-social btn-tiktok" onclick="shareToTiktok()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-        TikTok
-      </button>
-
-      <button class="btn-social btn-zalo" onclick="shareToZalo()">
-        <svg width="18" height="18" viewBox="0 0 48 48" fill="white"><text x="4" y="36" font-size="32" font-family="Arial" font-weight="bold">Z</text></svg>
-        Zalo
-      </button>
-    </div>
-
   </div>
 
-  <div class="tip">
-    <strong>Cách kiếm voucher:</strong> Chuyển link Shopee → chia sẻ lên Facebook/Instagram/TikTok → bạn bè mua qua link đó → bạn nhận cashback & voucher tự động từ Shopee Affiliate.
+  <div class="subid-info">
+    <strong>Cách hoạt động:</strong> Tool gắn <code>sub_id=<span id="subidPreview">kênh</span></code> vào link affiliate của bạn. Khi người mua click và thanh toán, Shopee ghi nhận đúng kênh → bạn được tính vào <strong>Đường Đua</strong> và nhận thưởng bonus theo kênh đó.
   </div>
 </div>
 
-<footer>Powered by Shopee Affiliate · Mật Mã Tự Do</footer>
-
-<!-- Caption modal cho Instagram & TikTok -->
-<div class="caption-overlay" id="captionOverlay" onclick="closeCaptionIfOutside(event)">
-  <div class="caption-card" id="captionCard">
-    <h3 id="captionTitle">Sao chép caption</h3>
-    <p id="captionDesc">Copy đoạn text dưới đây rồi dán vào bài đăng của bạn:</p>
-    <div class="caption-text" id="captionText"></div>
-    <div class="caption-btns">
-      <button class="btn btn-copy" style="flex:1" onclick="copyCaption()">📋 Sao chép caption</button>
-      <button class="btn" style="flex:1;background:var(--dark4);border:1px solid rgba(255,255,255,0.1);color:var(--text)" onclick="closeCaption()">Đóng</button>
-    </div>
-  </div>
-</div>
+<footer>Powered by Shopee Affiliate Program · Mật Mã Tự Do</footer>
 
 <div class="toast" id="toast"></div>
 
 <script>
   const AFFILIATE_ID = '17332610461';
-  const SUB_ID = 'default';
   const URL_RX = /(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/gi;
+
+  let selectedChannel = null;
+
+  const CH_LABELS = {
+    facebook:  'Facebook',
+    instagram: 'Instagram',
+    tiktok:    'TikTok',
+    zalo:      'Zalo',
+    youtube:   'YouTube',
+    website:   'Website',
+  };
+
+  function selectChannel(el) {
+    document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    selectedChannel = el.dataset.ch;
+    document.getElementById('subidPreview').textContent = selectedChannel;
+  }
 
   function extractShopeeUrl(text) {
     const matches = (text || '').match(URL_RX) || [];
@@ -419,11 +344,11 @@
     return found.startsWith('http') ? found : 'https://' + found;
   }
 
-  function buildAffiliateLink(originUrl) {
+  function buildAffiliateLink(originUrl, subId) {
     return 'https://s.shopee.vn/an_redir'
       + '?origin_link=' + encodeURIComponent(originUrl)
       + '&affiliate_id=' + AFFILIATE_ID
-      + '&sub_id=' + SUB_ID;
+      + '&sub_id=' + subId;
   }
 
   async function pasteLink() {
@@ -450,18 +375,24 @@
       return;
     }
 
-    const shopeeUrl = extractShopeeUrl(text);
-    if (!shopeeUrl) {
-      errorEl.textContent = '⚠️ Không tìm thấy link Shopee. Hãy kiểm tra lại đường dẫn.';
+    if (!selectedChannel) {
+      errorEl.textContent = '⚠️ Vui lòng chọn kênh social (Facebook, TikTok...) trước khi convert.';
       errorEl.classList.add('show');
       return;
     }
 
-    const affiliateLink = buildAffiliateLink(shopeeUrl);
+    const shopeeUrl = extractShopeeUrl(text);
+    if (!shopeeUrl) {
+      errorEl.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ. Hãy kiểm tra lại.';
+      errorEl.classList.add('show');
+      return;
+    }
+
+    const affiliateLink = buildAffiliateLink(shopeeUrl, selectedChannel);
     document.getElementById('resultBox').textContent = affiliateLink;
+    document.getElementById('chTag').textContent = CH_LABELS[selectedChannel] + ' · sub_id=' + selectedChannel;
     resultWrap.classList.add('show');
     window._currentLink = affiliateLink;
-    window._originalUrl = shopeeUrl;
   }
 
   function copyLink() {
@@ -484,66 +415,11 @@
     if (window._currentLink) window.open(window._currentLink, '_blank');
   }
 
-  /* ── Share functions ── */
-
-  function shareToFacebook() {
-    const link = window._currentLink;
-    if (!link) return showToast('⚠️ Hãy chuyển link trước!');
-    const caption = encodeURIComponent('🛍️ Mua sắm Shopee giá tốt — nhận hoàn tiền ngay!\n' + link);
-    const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link) + '&quote=' + caption;
-    window.open(fbUrl, '_blank', 'width=600,height=500');
-  }
-
-  function shareToZalo() {
-    const link = window._currentLink;
-    if (!link) return showToast('⚠️ Hãy chuyển link trước!');
-    const zaloUrl = 'https://zalo.me/share?url=' + encodeURIComponent(link) + '&title=' + encodeURIComponent('🛍️ Link Shopee hoàn tiền cho bạn!');
-    window.open(zaloUrl, '_blank');
-  }
-
-  function shareToInstagram() {
-    const link = window._currentLink;
-    if (!link) return showToast('⚠️ Hãy chuyển link trước!');
-    const caption = `🛍️ Deal Shopee siêu hời — mua qua link này để nhận hoàn tiền!\n\n👇 Link mua hàng:\n${link}\n\n#shopee #muasắm #hoàntiền #dealngon #shopeehanh`;
-    showCaption('Instagram / TikTok', 'Copy caption bên dưới → dán vào bài đăng/story của bạn. Shopee không cho share link trực tiếp qua story nên bạn cần dán tay.', caption);
-  }
-
-  function shareToTiktok() {
-    const link = window._currentLink;
-    if (!link) return showToast('⚠️ Hãy chuyển link trước!');
-    const caption = `🛒 Sản phẩm Shopee siêu rẻ đây nè! Mua qua link này còn được hoàn tiền 💸\n\nLink mua: ${link}\n\n#shopee #reviewsanpham #muasamthongminh #hoantien #tiktokshop`;
-    showCaption('TikTok Caption', 'Copy caption bên dưới → dán vào phần mô tả video TikTok của bạn:', caption);
-  }
-
-  function showCaption(title, desc, text) {
-    document.getElementById('captionTitle').textContent = title;
-    document.getElementById('captionDesc').textContent = desc;
-    document.getElementById('captionText').textContent = text;
-    window._currentCaption = text;
-    document.getElementById('captionOverlay').classList.add('show');
-  }
-
-  function closeCaption() {
-    document.getElementById('captionOverlay').classList.remove('show');
-  }
-
-  function closeCaptionIfOutside(e) {
-    if (e.target === document.getElementById('captionOverlay')) closeCaption();
-  }
-
-  function copyCaption() {
-    const text = window._currentCaption;
-    if (!text) return;
-    navigator.clipboard.writeText(text)
-      .then(() => { showToast('✅ Đã sao chép caption!'); closeCaption(); })
-      .catch(() => { showToast('⚠️ Không thể copy tự động — hãy chọn và copy tay'); });
-  }
-
   function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
     toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2800);
+    setTimeout(() => toast.classList.remove('show'), 2500);
   }
 
   document.getElementById('inputLink').addEventListener('keydown', function(e) {
