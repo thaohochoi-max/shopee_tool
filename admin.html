@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản lý - Thảo Thỏ Deal Shopee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dark: #0d0d0d; --dark2: #141414; --dark3: #1c1c1c; --dark4: #252525;
+      --text: #e8e8e8; --text2: #aaa;
+      --orange: #ee4d2d; --orange2: #d63c1e;
+      --green: #22c55e; --gold: #f5c842;
+      --blue: #3b82f6; --radius: 12px;
+    }
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: var(--dark); color: var(--text);
+      min-height: 100vh; padding: 0;
+    }
+
+    /* ── Login ── */
+    .login-wrap {
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .login-card {
+      background: var(--dark2); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px; padding: 40px 32px; width: 100%; max-width: 380px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    }
+    .login-card h2 { font-size: 1.3rem; margin-bottom: 6px; }
+    .login-card p { font-size: 0.82rem; color: var(--text2); margin-bottom: 24px; }
+    .login-card input {
+      width: 100%; background: var(--dark3);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+      padding: 13px 16px; color: var(--text); font-family: inherit;
+      font-size: 0.9rem; outline: none; margin-bottom: 14px;
+    }
+    .login-card input:focus { border-color: var(--orange); }
+    .login-card button {
+      width: 100%; padding: 13px; background: var(--orange); color: #fff;
+      border: none; border-radius: 10px; font-family: inherit;
+      font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.18s;
+    }
+    .login-card button:hover { background: var(--orange2); }
+    .login-err { color: #f87171; font-size: 0.82rem; margin-top: 10px; display: none; }
+    .login-err.show { display: block; }
+
+    /* ── Dashboard ── */
+    .dashboard { display: none; }
+    .dashboard.show { display: block; }
+
+    header {
+      background: var(--dark2); border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left h1 { font-size: 1rem; font-weight: 800; }
+    .header-left span { font-size: 0.75rem; color: var(--text2); }
+    .header-right { display: flex; gap: 10px; align-items: center; }
+    .btn-sm {
+      padding: 7px 14px; border-radius: 8px; border: none;
+      cursor: pointer; font-family: inherit; font-size: 0.8rem; font-weight: 600;
+      transition: all 0.15s; display: flex; align-items: center; gap: 5px;
+    }
+    .btn-outline {
+      background: transparent; color: var(--text2);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .btn-outline:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-green:hover { background: #16a34a; }
+    .btn-red { background: transparent; color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+    .btn-red:hover { background: rgba(248,113,113,0.1); }
+
+    .main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+    /* ── Stats ── */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+    .stat-card {
+      background: var(--dark2); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius); padding: 18px 20px;
+    }
+    .stat-card .label { font-size: 0.75rem; color: var(--text2); margin-bottom: 8px; }
+    .stat-card .value { font-size: 1.6rem; font-weight: 800; }
+    .stat-card .value.orange { color: var(--orange); }
+    .stat-card .value.green  { color: var(--green); }
+    .stat-card .value.gold   { color: var(--gold); }
+    .stat-card .value.blue   { color: var(--blue); }
+
+    /* ── Filters ── */
+    .filters {
+      display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-input {
+      background: var(--dark2); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px; padding: 8px 14px; color: var(--text);
+      font-family: inherit; font-size: 0.84rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .filter-input:focus { border-color: var(--orange); }
+    .filter-input::placeholder { color: var(--text2); opacity: 0.6; }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--dark2); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: var(--dark3); padding: 12px 14px;
+      text-align: left; font-size: 0.75rem; font-weight: 700;
+      color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    td { padding: 12px 14px; font-size: 0.82rem; vertical-align: middle; }
+
+    .td-time { color: var(--text2); white-space: nowrap; font-size: 0.75rem; }
+    .td-product {
+      max-width: 220px; overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap; color: var(--text);
+    }
+    .td-product a { color: inherit; text-decoration: none; }
+    .td-product a:hover { color: var(--orange); }
+    .td-channel .tag {
+      display: inline-block; padding: 3px 9px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; background: rgba(24,119,242,0.15);
+      color: #60a5fa; border: 1px solid rgba(24,119,242,0.25);
+    }
+    .tag.instagram { background: rgba(225,48,108,0.15); color: #f472b6; border-color: rgba(225,48,108,0.25); }
+    .tag.tiktok    { background: rgba(105,201,208,0.15); color: #67e8f9; border-color: rgba(105,201,208,0.25); }
+    .tag.zalo      { background: rgba(0,104,255,0.15);   color: #93c5fd; border-color: rgba(0,104,255,0.25); }
+    .tag.youtube   { background: rgba(255,0,0,0.15);     color: #fca5a5; border-color: rgba(255,0,0,0.25); }
+    .tag.website   { background: rgba(34,197,94,0.15);   color: #86efac; border-color: rgba(34,197,94,0.25); }
+
+    .td-commission input {
+      background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: var(--green); font-family: inherit; font-size: 0.82rem;
+      width: 90px; padding: 3px 4px; outline: none;
+      font-weight: 600;
+    }
+    .td-commission input:focus { border-bottom-color: var(--green); }
+    .td-commission input::placeholder { color: var(--text2); opacity: 0.4; font-weight: 400; }
+
+    .td-note input {
+      background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--text); font-family: inherit; font-size: 0.8rem;
+      width: 130px; padding: 3px 4px; outline: none;
+    }
+    .td-note input:focus { border-bottom-color: rgba(255,255,255,0.3); }
+
+    .btn-del {
+      background: none; border: none; cursor: pointer;
+      color: rgba(248,113,113,0.4); font-size: 1rem;
+      transition: color 0.15s; padding: 2px 6px;
+    }
+    .btn-del:hover { color: #f87171; }
+
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: var(--text2);
+    }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 14px; }
+    .empty-state p { font-size: 0.9rem; }
+
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--green); color: #fff; padding: 10px 22px;
+      border-radius: 50px; font-weight: 600; font-size: 0.85rem;
+      transition: transform 0.3s ease; z-index: 999;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .main { padding: 16px; }
+      .td-product { max-width: 130px; }
+      td, th { padding: 10px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <h2>🔐 Quản lý</h2>
+    <p>Thảo Thỏ - Deal Shopee</p>
+    <input type="password" id="pwInput" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter')doLogin()" />
+    <button onclick="doLogin()">Đăng nhập</button>
+    <p class="login-err" id="loginErr">⚠️ Mật khẩu không đúng</p>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+  <header>
+    <div class="header-left">
+      <span>🛍️</span>
+      <h1>Thảo Thỏ — Quản lý đơn hàng</h1>
+      <span id="totalCountBadge"></span>
+    </div>
+    <div class="header-right">
+      <button class="btn-sm btn-outline" onclick="exportCSV()">⬇ Xuất CSV</button>
+      <button class="btn-sm btn-outline" onclick="window.open('index.html','_blank')">🔗 Tool convert</button>
+      <button class="btn-sm btn-red" onclick="logout()">Đăng xuất</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">Tổng lượt convert</div>
+        <div class="value orange" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Hôm nay</div>
+        <div class="value blue" id="statToday">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Hoa hồng đã nhập</div>
+        <div class="value green" id="statCommission">0đ</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Chưa có hoa hồng</div>
+        <div class="value gold" id="statPending">0</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <input class="filter-input" type="text" id="searchInput" placeholder="🔍 Tìm link sản phẩm..." oninput="renderTable()" style="flex:1;min-width:180px" />
+      <input class="filter-input" type="date" id="dateFrom" oninput="renderTable()" />
+      <input class="filter-input" type="date" id="dateTo" oninput="renderTable()" />
+      <select class="filter-input" id="channelFilter" onchange="renderTable()">
+        <option value="">Tất cả kênh</option>
+        <option value="facebook">Facebook</option>
+        <option value="instagram">Instagram</option>
+        <option value="tiktok">TikTok</option>
+        <option value="zalo">Zalo</option>
+        <option value="youtube">YouTube</option>
+        <option value="website">Website</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Thời gian</th>
+            <th>Link sản phẩm</th>
+            <th>Kênh</th>
+            <th>Hoa hồng (đ)</th>
+            <th>Ghi chú</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none">
+        <div class="icon">📭</div>
+        <p>Chưa có lượt convert nào.<br>Dùng tool để bắt đầu ghi nhận.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const PASS = 'thaotho2024';
+
+  function doLogin() {
+    const pw = document.getElementById('pwInput').value;
+    if (pw === PASS) {
+      sessionStorage.setItem('tt_auth', '1');
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('dashboard').classList.add('show');
+      init();
+    } else {
+      document.getElementById('loginErr').classList.add('show');
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem('tt_auth');
+    location.reload();
+  }
+
+  function getRecords() {
+    return JSON.parse(localStorage.getItem('tt_conversions') || '[]');
+  }
+
+  function saveRecords(records) {
+    localStorage.setItem('tt_conversions', JSON.stringify(records));
+  }
+
+  function formatTime(iso) {
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2,'0');
+    return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}<br>${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function shortUrl(url) {
+    try {
+      const u = new URL(url);
+      return u.hostname.replace('www.','') + u.pathname.slice(0,40) + (u.pathname.length > 40 ? '…' : '');
+    } catch { return url.slice(0,50) + '…'; }
+  }
+
+  function updateStats(records) {
+    const today = new Date().toDateString();
+    const todayCount = records.filter(r => new Date(r.time).toDateString() === today).length;
+    const totalComm = records.reduce((s, r) => s + (parseFloat(r.commission) || 0), 0);
+    const pending = records.filter(r => !r.commission).length;
+
+    document.getElementById('statTotal').textContent = records.length;
+    document.getElementById('statToday').textContent = todayCount;
+    document.getElementById('statCommission').textContent = totalComm.toLocaleString('vi-VN') + 'đ';
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('totalCountBadge').textContent = records.length ? `(${records.length} đơn)` : '';
+  }
+
+  function renderTable() {
+    const records = getRecords();
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const dateFrom = document.getElementById('dateFrom').value;
+    const dateTo = document.getElementById('dateTo').value;
+    const channel = document.getElementById('channelFilter').value;
+
+    const filtered = records.filter(r => {
+      if (search && !r.origin.toLowerCase().includes(search) && !(r.note||'').toLowerCase().includes(search)) return false;
+      if (channel && r.channel !== channel) return false;
+      const d = new Date(r.time).toISOString().slice(0,10);
+      if (dateFrom && d < dateFrom) return false;
+      if (dateTo && d > dateTo) return false;
+      return true;
+    });
+
+    updateStats(records);
+
+    const tbody = document.getElementById('tableBody');
+    const empty = document.getElementById('emptyState');
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map((r, i) => `
+      <tr>
+        <td style="color:var(--text2);font-size:0.75rem">${filtered.length - i}</td>
+        <td class="td-time">${formatTime(r.time)}</td>
+        <td class="td-product">
+          <a href="${r.origin}" target="_blank" title="${r.origin}">${shortUrl(r.origin)}</a>
+        </td>
+        <td class="td-channel">
+          <span class="tag ${r.channel}">${r.channel}</span>
+        </td>
+        <td class="td-commission">
+          <input type="number" placeholder="Nhập hoa hồng"
+            value="${r.commission || ''}"
+            onchange="updateField(${r.id}, 'commission', this.value)"
+          />
+        </td>
+        <td class="td-note">
+          <input type="text" placeholder="Ghi chú..."
+            value="${r.note || ''}"
+            onchange="updateField(${r.id}, 'note', this.value)"
+          />
+        </td>
+        <td>
+          <button class="btn-del" onclick="deleteRecord(${r.id})" title="Xoá">✕</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function updateField(id, field, value) {
+    const records = getRecords();
+    const idx = records.findIndex(r => r.id === id);
+    if (idx !== -1) { records[idx][field] = value; saveRecords(records); updateStats(records); }
+    showToast('✅ Đã lưu');
+  }
+
+  function deleteRecord(id) {
+    if (!confirm('Xoá lượt convert này?')) return;
+    const records = getRecords().filter(r => r.id !== id);
+    saveRecords(records);
+    renderTable();
+    showToast('🗑 Đã xoá');
+  }
+
+  function exportCSV() {
+    const records = getRecords();
+    if (!records.length) { showToast('⚠️ Chưa có dữ liệu'); return; }
+    const header = ['STT','Thời gian','Link sản phẩm','Kênh','Hoa hồng','Ghi chú'];
+    const rows = records.map((r,i) => [
+      i+1,
+      new Date(r.time).toLocaleString('vi-VN'),
+      r.origin, r.channel,
+      r.commission || '',
+      r.note || ''
+    ]);
+    const csv = [header, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `thaotho_deals_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    showToast('✅ Đã xuất CSV!');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function init() {
+    renderTable();
+    setInterval(renderTable, 10000);
+  }
+
+  if (sessionStorage.getItem('tt_auth') === '1') {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('dashboard').classList.add('show');
+    init();
+  }
+</script>
+</body>
+</html>
