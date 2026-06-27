@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shopee Đường Đua — Convert Link Affiliate</title>
+  <title>Shopee Hoàn Tiền</title>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --gold: #f5c842;
       --dark: #0d0d0d;
       --dark2: #141414;
       --dark3: #1c1c1c;
@@ -19,6 +18,7 @@
       --orange: #ee4d2d;
       --orange2: #d63c1e;
       --green: #22c55e;
+      --gold: #f5c842;
       --radius: 14px;
     }
 
@@ -40,34 +40,23 @@
       border-radius: 20px;
       padding: 36px 32px;
       width: 100%;
-      max-width: 580px;
+      max-width: 520px;
       box-shadow: 0 24px 80px rgba(0,0,0,0.5);
     }
 
     .logo {
       display: flex; align-items: center; gap: 12px;
-      margin-bottom: 6px;
+      margin-bottom: 28px;
     }
     .logo-icon {
-      width: 44px; height: 44px; background: var(--orange);
-      border-radius: 12px; display: flex; align-items: center;
-      justify-content: center; font-size: 22px;
+      width: 44px; height: 44px;
+      background: var(--orange);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
     }
     .logo-text h1 { font-size: 1.2rem; font-weight: 800; }
     .logo-text p  { font-size: 0.76rem; color: var(--text2); margin-top: 2px; }
-
-    .badge-duadua {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: linear-gradient(90deg,#ee4d2d,#f5a623);
-      color: #fff; font-size: 0.72rem; font-weight: 700;
-      padding: 4px 10px; border-radius: 20px;
-      margin-bottom: 24px; margin-top: 10px;
-    }
-
-    .section-label {
-      font-size: 0.78rem; font-weight: 600; color: var(--text2);
-      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;
-    }
 
     textarea {
       width: 100%;
@@ -86,78 +75,33 @@
     textarea:focus { border-color: var(--orange); }
     textarea::placeholder { color: var(--text2); opacity: 0.6; }
 
-    .paste-btn {
-      width: 100%; padding: 10px;
-      background: var(--dark4); color: var(--text2);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px; cursor: pointer;
-      font-family: inherit; font-size: 0.83rem; font-weight: 600;
-      margin-bottom: 22px; transition: background 0.15s;
+    .btn-row {
+      display: flex; gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 10px; border: none;
+      cursor: pointer; font-family: inherit;
+      font-size: 0.88rem; font-weight: 700;
+      transition: all 0.18s;
       display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-    .paste-btn:hover { background: #2a2a2a; color: var(--text); }
 
-    /* ── Channel grid ── */
-    .channel-label {
-      font-size: 0.78rem; font-weight: 700; color: var(--text2);
-      text-transform: uppercase; letter-spacing: 0.08em;
-      margin-bottom: 12px;
+    .btn-paste {
+      background: var(--dark4); color: var(--text);
+      border: 1px solid rgba(255,255,255,0.1);
+      flex: 0 0 auto; padding: 12px 18px;
     }
+    .btn-paste:hover { background: #2e2e2e; }
 
-    .channel-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 22px;
-    }
-
-    .ch-btn {
-      padding: 14px 8px;
-      border-radius: 12px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 700;
-      transition: all 0.18s;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 7px;
-      background: var(--dark3);
-      color: var(--text2);
-    }
-
-    .ch-btn .ch-icon { font-size: 1.4rem; line-height: 1; }
-
-    .ch-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
-
-    .ch-btn.active {
-      border-color: var(--orange);
-      background: rgba(238,77,45,0.12);
-      color: var(--text);
-    }
-
-    .ch-btn[data-ch="facebook"].active   { border-color:#1877f2; background:rgba(24,119,242,0.12); }
-    .ch-btn[data-ch="instagram"].active  { border-color:#e1306c; background:rgba(225,48,108,0.12); }
-    .ch-btn[data-ch="tiktok"].active     { border-color:#69c9d0; background:rgba(105,201,208,0.12); }
-    .ch-btn[data-ch="zalo"].active       { border-color:#0068ff; background:rgba(0,104,255,0.12); }
-    .ch-btn[data-ch="youtube"].active    { border-color:#ff0000; background:rgba(255,0,0,0.12); }
-    .ch-btn[data-ch="website"].active    { border-color:var(--green); background:rgba(34,197,94,0.12); }
-
-    /* ── Convert button ── */
-    .convert-btn {
-      width: 100%; padding: 15px;
+    .btn-convert {
       background: var(--orange); color: #fff;
-      border: none; border-radius: 12px;
-      cursor: pointer; font-family: inherit;
-      font-size: 1rem; font-weight: 800;
-      transition: all 0.18s; margin-bottom: 20px;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .convert-btn:hover { background: var(--orange2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(238,77,45,0.3); }
-    .convert-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-convert:hover { background: var(--orange2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(238,77,45,0.3); }
 
-    /* ── Result ── */
     .error-msg {
       background: rgba(239,68,68,0.1);
       border: 1px solid rgba(239,68,68,0.3);
@@ -170,62 +114,43 @@
     .result-wrap { display: none; }
     .result-wrap.show { display: block; }
 
-    .result-header {
-      display: flex; align-items: center; gap: 8px;
+    .result-label {
+      font-size: 0.76rem; font-weight: 600; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.08em;
       margin-bottom: 10px;
-    }
-    .result-header .ch-tag {
-      font-size: 0.72rem; font-weight: 700;
-      padding: 3px 9px; border-radius: 20px;
-      background: rgba(238,77,45,0.15);
-      color: var(--orange); border: 1px solid rgba(238,77,45,0.3);
     }
 
     .result-box {
       background: var(--dark3);
-      border: 1px solid rgba(238,77,45,0.3);
+      border: 1px solid rgba(238,77,45,0.25);
       border-radius: var(--radius);
       padding: 14px 16px;
       font-size: 0.8rem; word-break: break-all;
       color: var(--text); line-height: 1.6;
-      margin-bottom: 12px; min-height: 56px;
+      margin-bottom: 12px; min-height: 52px;
       cursor: pointer; user-select: all;
-      transition: border-color 0.2s;
     }
-    .result-box:hover { border-color: rgba(238,77,45,0.6); }
+    .result-box:hover { border-color: rgba(238,77,45,0.5); }
 
-    .result-actions {
-      display: flex; gap: 10px; flex-wrap: wrap;
+    .action-row {
+      display: flex; gap: 10px;
     }
 
-    .btn {
-      flex: 1; min-width: 100px;
-      padding: 12px 14px; border-radius: 10px; border: none;
-      cursor: pointer; font-family: inherit;
-      font-size: 0.85rem; font-weight: 700;
-      transition: all 0.18s;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      text-decoration: none; color: #fff;
-    }
-    .btn-copy  { background: var(--green); }
-    .btn-copy:hover  { background: #16a34a; }
-    .btn-open  { background: var(--orange); }
-    .btn-open:hover  { background: var(--orange2); }
+    .btn-copy { background: var(--green); color: #fff; }
+    .btn-copy:hover { background: #16a34a; }
 
-    /* ── Sub-id info ── */
-    .subid-info {
-      margin-top: 18px;
+    .btn-open { background: var(--orange); color: #fff; }
+    .btn-open:hover { background: var(--orange2); }
+
+    .tip {
+      margin-top: 20px;
       padding: 12px 16px;
       background: rgba(245,200,66,0.05);
-      border: 1px solid rgba(245,200,66,0.15);
+      border: 1px solid rgba(245,200,66,0.12);
       border-radius: 10px;
       font-size: 0.79rem; color: var(--text2); line-height: 1.7;
     }
-    .subid-info strong { color: var(--gold); }
-    .subid-info code {
-      background: var(--dark3); padding: 1px 6px;
-      border-radius: 4px; font-size: 0.75rem; color: #e8e8e8;
-    }
+    .tip strong { color: var(--gold); }
 
     .toast {
       position: fixed; bottom: 32px; left: 50%;
@@ -234,19 +159,16 @@
       padding: 12px 24px; border-radius: 50px;
       font-weight: 600; font-size: 0.9rem;
       transition: transform 0.3s ease; z-index: 999;
-      white-space: nowrap;
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
 
     footer {
       margin-top: 20px; font-size: 0.72rem;
-      color: var(--text2); text-align: center; opacity: 0.45;
+      color: var(--text2); text-align: center; opacity: 0.4;
     }
 
-    @media (max-width: 420px) {
+    @media (max-width: 400px) {
       .card { padding: 22px 14px; }
-      .channel-grid { grid-template-columns: repeat(3,1fr); gap: 8px; }
-      .ch-btn { padding: 12px 4px; font-size: 0.73rem; }
     }
   </style>
 </head>
@@ -254,107 +176,64 @@
 
 <div class="card">
   <div class="logo">
-    <div class="logo-icon">🏆</div>
+    <div class="logo-icon">🛍️</div>
     <div class="logo-text">
-      <h1>Shopee Đường Đua</h1>
-      <p>Convert link đúng kênh — bắt chương trình affiliate</p>
+      <h1>Shopee Hoàn Tiền</h1>
+      <p>Dán link → nhận cashback & voucher</p>
     </div>
   </div>
-  <div class="badge-duadua">⚡ Shopee Affiliate · Đường Đua Campaign</div>
 
-  <p class="section-label">Bước 1 — Dán link Shopee</p>
   <textarea id="inputLink" placeholder="Dán link Shopee vào đây...&#10;VD: https://shopee.vn/... hoặc shp.ee/..."></textarea>
-  <button class="paste-btn" onclick="pasteLink()">📋 Dán từ clipboard</button>
 
-  <p class="channel-label">Bước 2 — Chọn kênh social</p>
-  <div class="channel-grid">
-    <button class="ch-btn" data-ch="facebook" onclick="selectChannel(this)">
-      <span class="ch-icon">📘</span>Facebook
-    </button>
-    <button class="ch-btn" data-ch="instagram" onclick="selectChannel(this)">
-      <span class="ch-icon">📸</span>Instagram
-    </button>
-    <button class="ch-btn" data-ch="tiktok" onclick="selectChannel(this)">
-      <span class="ch-icon">🎵</span>TikTok
-    </button>
-    <button class="ch-btn" data-ch="zalo" onclick="selectChannel(this)">
-      <span class="ch-icon">💬</span>Zalo
-    </button>
-    <button class="ch-btn" data-ch="youtube" onclick="selectChannel(this)">
-      <span class="ch-icon">▶️</span>YouTube
-    </button>
-    <button class="ch-btn" data-ch="website" onclick="selectChannel(this)">
-      <span class="ch-icon">🌐</span>Website
-    </button>
+  <div class="btn-row">
+    <button class="btn btn-paste" onclick="pasteLink()">📋 Dán</button>
+    <button class="btn btn-convert" onclick="convertLink()">⚡ Lấy link hoàn tiền</button>
   </div>
-
-  <button class="convert-btn" onclick="convertLink()">
-    ⚡ Convert Link Đường Đua
-  </button>
 
   <div class="error-msg" id="errorMsg"></div>
 
   <div class="result-wrap" id="resultWrap">
-    <div class="result-header">
-      <p class="section-label" style="margin:0">Link đã convert</p>
-      <span class="ch-tag" id="chTag"></span>
-    </div>
+    <p class="result-label">Link hoàn tiền của bạn</p>
     <div class="result-box" id="resultBox" onclick="copyLink()" title="Nhấn để sao chép"></div>
-    <div class="result-actions">
-      <button class="btn btn-copy" onclick="copyLink()">📋 Sao chép link</button>
+    <div class="action-row">
+      <button class="btn btn-copy" onclick="copyLink()">📋 Sao chép</button>
       <button class="btn btn-open" onclick="openLink()">🛒 Mở Shopee</button>
     </div>
   </div>
 
-  <div class="subid-info">
-    <strong>Cách hoạt động:</strong> Tool gắn <code>sub_id=<span id="subidPreview">kênh</span></code> vào link affiliate của bạn. Khi người mua click và thanh toán, Shopee ghi nhận đúng kênh → bạn được tính vào <strong>Đường Đua</strong> và nhận thưởng bonus theo kênh đó.
+  <div class="tip">
+    <strong>Cách dùng:</strong> Dán link Shopee bất kỳ (kể cả link rút gọn shp.ee), nhấn <strong>Lấy link hoàn tiền</strong> — mua hàng qua link đó để nhận cashback và voucher.
   </div>
 </div>
 
-<footer>Powered by Shopee Affiliate Program · Mật Mã Tự Do</footer>
+<footer>Shopee Hoàn Tiền · Mật Mã Tự Do</footer>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  const AFFILIATE_ID = '17332610461';
+  const _aid = '17332610461';
+  const _sid = 'facebook';
+
   const URL_RX = /(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/gi;
 
-  let selectedChannel = null;
-
-  const CH_LABELS = {
-    facebook:  'Facebook',
-    instagram: 'Instagram',
-    tiktok:    'TikTok',
-    zalo:      'Zalo',
-    youtube:   'YouTube',
-    website:   'Website',
-  };
-
-  function selectChannel(el) {
-    document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
-    el.classList.add('active');
-    selectedChannel = el.dataset.ch;
-    document.getElementById('subidPreview').textContent = selectedChannel;
+  function _xu(text) {
+    const m = (text || '').match(URL_RX) || [];
+    const f = m.find(u => /shopee|shp\.ee|shope\.ee/i.test(u));
+    if (!f) return null;
+    return f.startsWith('http') ? f : 'https://' + f;
   }
 
-  function extractShopeeUrl(text) {
-    const matches = (text || '').match(URL_RX) || [];
-    const found = matches.find(u => /shopee|shp\.ee|shope\.ee/i.test(u));
-    if (!found) return null;
-    return found.startsWith('http') ? found : 'https://' + found;
-  }
-
-  function buildAffiliateLink(originUrl, subId) {
+  function _bl(url) {
     return 'https://s.shopee.vn/an_redir'
-      + '?origin_link=' + encodeURIComponent(originUrl)
-      + '&affiliate_id=' + AFFILIATE_ID
-      + '&sub_id=' + subId;
+      + '?origin_link=' + encodeURIComponent(url)
+      + '&affiliate_id=' + _aid
+      + '&sub_id=' + _sid;
   }
 
   async function pasteLink() {
     try {
-      const text = await navigator.clipboard.readText();
-      document.getElementById('inputLink').value = text;
+      const t = await navigator.clipboard.readText();
+      document.getElementById('inputLink').value = t;
     } catch {
       document.getElementById('inputLink').focus();
       showToast('Nhấn Ctrl+V để dán link');
@@ -363,66 +242,52 @@
 
   function convertLink() {
     const text = document.getElementById('inputLink').value.trim();
-    const errorEl = document.getElementById('errorMsg');
-    const resultWrap = document.getElementById('resultWrap');
-
-    errorEl.classList.remove('show');
-    resultWrap.classList.remove('show');
+    const err  = document.getElementById('errorMsg');
+    const res  = document.getElementById('resultWrap');
+    err.classList.remove('show');
+    res.classList.remove('show');
 
     if (!text) {
-      errorEl.textContent = '⚠️ Vui lòng dán link Shopee trước.';
-      errorEl.classList.add('show');
-      return;
+      err.textContent = '⚠️ Vui lòng dán link Shopee trước.';
+      err.classList.add('show'); return;
     }
-
-    if (!selectedChannel) {
-      errorEl.textContent = '⚠️ Vui lòng chọn kênh social (Facebook, TikTok...) trước khi convert.';
-      errorEl.classList.add('show');
-      return;
+    const url = _xu(text);
+    if (!url) {
+      err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ. Hãy kiểm tra lại.';
+      err.classList.add('show'); return;
     }
-
-    const shopeeUrl = extractShopeeUrl(text);
-    if (!shopeeUrl) {
-      errorEl.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ. Hãy kiểm tra lại.';
-      errorEl.classList.add('show');
-      return;
-    }
-
-    const affiliateLink = buildAffiliateLink(shopeeUrl, selectedChannel);
-    document.getElementById('resultBox').textContent = affiliateLink;
-    document.getElementById('chTag').textContent = CH_LABELS[selectedChannel] + ' · sub_id=' + selectedChannel;
-    resultWrap.classList.add('show');
-    window._currentLink = affiliateLink;
+    const link = _bl(url);
+    document.getElementById('resultBox').textContent = link;
+    res.classList.add('show');
+    window._L = link;
   }
 
   function copyLink() {
     const link = document.getElementById('resultBox').textContent;
     if (!link) return;
     navigator.clipboard.writeText(link)
-      .then(() => showToast('✅ Đã sao chép link!'))
+      .then(() => showToast('✅ Đã sao chép!'))
       .catch(() => {
         const el = document.getElementById('resultBox');
-        const range = document.createRange();
-        range.selectNode(el);
+        const r = document.createRange(); r.selectNode(el);
         window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
+        window.getSelection().addRange(r);
         document.execCommand('copy');
         showToast('✅ Đã sao chép!');
       });
   }
 
   function openLink() {
-    if (window._currentLink) window.open(window._currentLink, '_blank');
+    if (window._L) window.open(window._L, '_blank');
   }
 
   function showToast(msg) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
   }
 
-  document.getElementById('inputLink').addEventListener('keydown', function(e) {
+  document.getElementById('inputLink').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); convertLink(); }
   });
 </script>
