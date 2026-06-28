@@ -147,34 +147,26 @@
       + '&sub_id=' + _sid;
   }
 
-  function parseName(html) {
-    if (!html) return null;
-    const og = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i)
-             || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:title"/i);
-    if (og && og[1].length > 3) return og[1].trim();
-    const t = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-    if (t) return t[1].replace(/\s*[\|–\-].*$/i,'').trim();
-    return null;
-  }
-
   async function fetchProductName(url) {
-    // 1. corsproxy.io — follows redirects natively
+    // 1. Microlink API — theo redirect, trả JSON sạch
     try {
-      const r = await fetch('https://corsproxy.io/?url=' + encodeURIComponent(url));
-      const html = await r.text();
-      const name = parseName(html);
-      if (name && name.length > 4) return name;
-    } catch {}
-
-    // 2. allorigins fallback
-    try {
-      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+      const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url));
       const d = await r.json();
-      const name = parseName(d.contents || '');
-      if (name && name.length > 4) return name;
+      if (d.status === 'success' && d.data && d.data.title) {
+        return d.data.title.replace(/\s*[\|–\-].*$/i,'').trim();
+      }
     } catch {}
 
-    // 3. URL path fallback
+    // 2. JSONLink fallback
+    try {
+      const r = await fetch('https://jsonlink.io/api/extract?url=' + encodeURIComponent(url));
+      const d = await r.json();
+      if (d.title && d.title.length > 3) {
+        return d.title.replace(/\s*[\|–\-].*$/i,'').trim();
+      }
+    } catch {}
+
+    // 3. Trích từ URL path nếu là link đầy đủ
     try {
       const path = decodeURIComponent(new URL(url).pathname);
       const m = path.match(/\/(.+)-i\.\d+\.\d+/);
