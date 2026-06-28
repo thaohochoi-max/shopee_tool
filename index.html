@@ -132,6 +132,7 @@
   const _aid = '17332610461';
   const _sid = 'facebook';
   const URL_RX = /(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/gi;
+  const GAS_PROXY = ''; // << DÁN URL GOOGLE APPS SCRIPT VÀO ĐÂY
 
   function _xu(text) {
     const m = (text || '').match(URL_RX) || [];
@@ -160,14 +161,29 @@
     return /shp\.ee|vn\.shp\.ee/i.test(url) && !/shopee\.vn\//i.test(url);
   }
 
-  // Resolve link rút gọn → URL đầy đủ shopee.vn qua allorigins
+  // Resolve link rút gọn → URL đầy đủ shopee.vn
   async function resolveUrl(url) {
+    const abort = (ms) => { const c = new AbortController(); setTimeout(() => c.abort(), ms); return c; };
+
+    // Ưu tiên: Google Apps Script (server-side, vượt bot Shopee)
+    if (GAS_PROXY) {
+      try {
+        const c = abort(8000);
+        const r = await fetch(GAS_PROXY + '?url=' + encodeURIComponent(url), {signal: c.signal});
+        const d = await r.json();
+        if (d.url && /shopee\.vn\//i.test(d.url)) return d.url;
+      } catch {}
+    }
+
+    // Fallback: allorigins
     try {
-      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+      const c = abort(6000);
+      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url), {signal: c.signal});
       const d = await r.json();
-      const final = d.status && d.status.url;
-      if (final && /shopee\.vn\//i.test(final)) return final;
+      const fu = d.status && d.status.url;
+      if (fu && fu !== url && /shopee\.vn\//i.test(fu) && !/\/(mall|error|login)($|\/)/i.test(fu)) return fu;
     } catch {}
+
     return null;
   }
 
