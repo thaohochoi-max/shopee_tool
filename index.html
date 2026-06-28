@@ -160,15 +160,29 @@
       + '&sub_id=' + _sid;
   }
 
+  function extractProductName(url) {
+    try {
+      const path = decodeURIComponent(new URL(url).pathname);
+      const m = path.match(/\/(.+)-i\.\d+\.\d+/);
+      if (m) return m[1].replace(/-/g,' ').trim();
+      const parts = path.split('/').filter(p=>p);
+      if (parts.length) return parts[parts.length-1].replace(/-/g,' ').slice(0,80);
+    } catch {}
+    return '';
+  }
+
   async function logConversion(originUrl, affiliateLink) {
     try {
       await db.collection('conversions').add({
         time: firebase.firestore.FieldValue.serverTimestamp(),
         origin: originUrl,
+        productName: extractProductName(originUrl),
         affiliate: affiliateLink,
         channel: _sid,
+        orderCode: '',
         commission: '',
-        note: ''
+        bankAccount: '',
+        paymentStatus: 'unpaid'
       });
     } catch(e) { console.warn('Log error:', e); }
   }

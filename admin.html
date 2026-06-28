@@ -44,21 +44,18 @@
 
     header {
       background: var(--dark2); border-bottom: 1px solid rgba(255,255,255,0.06);
-      padding: 0 24px; height: 60px;
+      padding: 0 20px; height: 58px;
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 10;
     }
     .header-left { display: flex; align-items: center; gap: 10px; }
-    .header-left h1 { font-size: 1rem; font-weight: 800; }
-    .live-dot {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--green);
-      animation: pulse 1.5s infinite;
-    }
+    .header-left h1 { font-size: 0.95rem; font-weight: 800; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .header-right { display: flex; gap: 8px; }
     .btn-sm {
-      padding: 7px 14px; border-radius: 8px; border: none;
-      cursor: pointer; font-family: inherit; font-size: 0.8rem; font-weight: 600;
+      padding: 7px 12px; border-radius: 8px; border: none;
+      cursor: pointer; font-family: inherit; font-size: 0.78rem; font-weight: 600;
       transition: all 0.15s; display: flex; align-items: center; gap: 5px;
     }
     .btn-outline { background: transparent; color: var(--text2); border: 1px solid rgba(255,255,255,0.12); }
@@ -66,25 +63,26 @@
     .btn-red { background: transparent; color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
     .btn-red:hover { background: rgba(248,113,113,0.08); }
 
-    .main { padding: 24px; max-width: 1100px; margin: 0 auto; }
+    .main { padding: 20px; max-width: 1400px; margin: 0 auto; }
 
     /* Stats */
-    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+    .stats { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 20px; }
     .stat-card {
       background: var(--dark2); border: 1px solid rgba(255,255,255,0.07);
-      border-radius: var(--radius); padding: 18px 20px;
+      border-radius: var(--radius); padding: 16px 18px;
     }
-    .stat-card .label { font-size: 0.74rem; color: var(--text2); margin-bottom: 8px; }
-    .stat-card .value { font-size: 1.6rem; font-weight: 800; }
-    .orange { color: var(--orange); } .green { color: var(--green); }
-    .gold { color: var(--gold); } .blue { color: var(--blue); }
+    .stat-card .label { font-size: 0.72rem; color: var(--text2); margin-bottom: 6px; }
+    .stat-card .value { font-size: 1.45rem; font-weight: 800; }
+    .c-orange { color: var(--orange); } .c-green { color: var(--green); }
+    .c-gold { color: var(--gold); } .c-blue { color: var(--blue); }
+    .c-purple { color: #a78bfa; }
 
     /* Filters */
-    .filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filters { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
     .filter-input {
       background: var(--dark2); border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 8px; padding: 8px 14px; color: var(--text);
-      font-family: inherit; font-size: 0.84rem; outline: none;
+      border-radius: 8px; padding: 8px 12px; color: var(--text);
+      font-family: inherit; font-size: 0.82rem; outline: none;
     }
     .filter-input:focus { border-color: var(--orange); }
     .filter-input::placeholder { color: var(--text2); opacity: 0.6; }
@@ -92,67 +90,86 @@
     /* Table */
     .table-wrap {
       background: var(--dark2); border: 1px solid rgba(255,255,255,0.07);
-      border-radius: var(--radius); overflow: hidden;
+      border-radius: var(--radius); overflow-x: auto;
     }
-    table { width: 100%; border-collapse: collapse; }
+    table { width: 100%; border-collapse: collapse; min-width: 1100px; }
     thead th {
-      background: var(--dark3); padding: 12px 14px; text-align: left;
-      font-size: 0.73rem; font-weight: 700; color: var(--text2);
+      background: var(--dark3); padding: 11px 12px; text-align: left;
+      font-size: 0.7rem; font-weight: 700; color: var(--text2);
       text-transform: uppercase; letter-spacing: 0.06em;
       border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap;
     }
     tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.1s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(255,255,255,0.02); }
-    td { padding: 11px 14px; font-size: 0.82rem; vertical-align: middle; }
+    td { padding: 10px 12px; font-size: 0.8rem; vertical-align: middle; }
 
-    .td-time { color: var(--text2); white-space: nowrap; font-size: 0.74rem; line-height: 1.5; }
-    .td-product { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .td-product a { color: var(--text); text-decoration: none; }
-    .td-product a:hover { color: var(--orange); }
+    .td-time { color: var(--text2); white-space: nowrap; font-size: 0.72rem; line-height: 1.5; }
+
+    .td-product { max-width: 180px; }
+    .product-name {
+      font-size: 0.8rem; font-weight: 600; color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      display: block; max-width: 170px;
+    }
+    .product-link {
+      font-size: 0.7rem; color: var(--text2); text-decoration: none;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      display: block; max-width: 170px;
+    }
+    .product-link:hover { color: var(--orange); }
 
     .tag {
-      display: inline-block; padding: 3px 9px; border-radius: 20px;
-      font-size: 0.71rem; font-weight: 700;
+      display: inline-block; padding: 3px 8px; border-radius: 20px;
+      font-size: 0.69rem; font-weight: 700;
       background: rgba(24,119,242,0.15); color: #60a5fa; border: 1px solid rgba(24,119,242,0.25);
     }
     .tag.instagram { background: rgba(225,48,108,0.15); color: #f472b6; border-color: rgba(225,48,108,0.25); }
     .tag.tiktok    { background: rgba(105,201,208,0.15); color: #67e8f9; border-color: rgba(105,201,208,0.25); }
-    .tag.zalo      { background: rgba(0,104,255,0.15);   color: #93c5fd; border-color: rgba(0,104,255,0.25); }
-    .tag.youtube   { background: rgba(255,0,0,0.15);     color: #fca5a5; border-color: rgba(255,0,0,0.25); }
+    .tag.zalo      { background: rgba(0,104,255,0.15); color: #93c5fd; border-color: rgba(0,104,255,0.25); }
 
     .editable {
       background: transparent; border: none;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      color: var(--text); font-family: inherit; font-size: 0.82rem;
-      padding: 3px 4px; outline: none; width: 110px;
+      color: var(--text); font-family: inherit; font-size: 0.8rem;
+      padding: 3px 4px; outline: none; width: 100px;
     }
-    .editable.comm { color: var(--green); font-weight: 700; width: 90px; }
     .editable:focus { border-bottom-color: rgba(255,255,255,0.3); }
-    .editable::placeholder { color: var(--text2); opacity: 0.4; font-weight: 400; }
+    .editable::placeholder { color: var(--text2); opacity: 0.35; font-weight: 400; }
+    .editable.comm { color: var(--orange); font-weight: 700; width: 80px; }
+    .editable.bank { width: 120px; }
+    .editable.order { width: 110px; }
 
-    .btn-del { background: none; border: none; cursor: pointer; color: rgba(248,113,113,0.35); font-size: 1rem; padding: 2px 6px; transition: color 0.15s; }
+    .cashback-val { color: var(--green); font-weight: 700; font-size: 0.82rem; }
+    .cashback-empty { color: var(--text2); font-size: 0.75rem; opacity: 0.5; }
+
+    .status-select {
+      background: var(--dark3); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 5px 8px; color: var(--text);
+      font-family: inherit; font-size: 0.75rem; font-weight: 600; outline: none; cursor: pointer;
+    }
+    .status-select.paid { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.3); color: var(--green); }
+    .status-select.unpaid { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.25); color: #f87171; }
+
+    .btn-del { background: none; border: none; cursor: pointer; color: rgba(248,113,113,0.3); font-size: 1rem; padding: 2px 6px; transition: color 0.15s; }
     .btn-del:hover { color: #f87171; }
 
-    .empty-state { text-align: center; padding: 56px 20px; color: var(--text2); }
-    .empty-state .icon { font-size: 2.5rem; margin-bottom: 14px; }
-
-    .loading { text-align: center; padding: 40px; color: var(--text2); font-size: 0.9rem; }
+    .empty-state { text-align: center; padding: 50px 20px; color: var(--text2); }
+    .empty-state .icon { font-size: 2.2rem; margin-bottom: 12px; }
+    .loading { text-align: center; padding: 36px; color: var(--text2); font-size: 0.88rem; }
 
     .toast {
-      position: fixed; bottom: 28px; left: 50%;
+      position: fixed; bottom: 26px; left: 50%;
       transform: translateX(-50%) translateY(80px);
       background: var(--green); color: #fff; padding: 10px 22px;
-      border-radius: 50px; font-weight: 600; font-size: 0.85rem;
+      border-radius: 50px; font-weight: 600; font-size: 0.84rem;
       transition: transform 0.3s ease; z-index: 999;
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
 
     @media (max-width: 768px) {
       .stats { grid-template-columns: repeat(2,1fr); }
-      .main { padding: 14px; }
-      td, th { padding: 9px 10px; }
-      .td-product { max-width: 110px; }
+      .main { padding: 12px; }
     }
   </style>
 </head>
@@ -175,7 +192,7 @@
       <h1>Thảo Thỏ — Quản lý đơn hàng</h1>
     </div>
     <div class="header-right">
-      <button class="btn-sm btn-outline" onclick="exportCSV()">⬇ Xuất CSV</button>
+      <button class="btn-sm btn-outline" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn-sm btn-outline" onclick="window.open('index.html','_blank')">🔗 Tool</button>
       <button class="btn-sm btn-red" onclick="logout()">Đăng xuất</button>
     </div>
@@ -183,23 +200,21 @@
 
   <div class="main">
     <div class="stats">
-      <div class="stat-card"><div class="label">Tổng lượt convert</div><div class="value orange" id="statTotal">—</div></div>
-      <div class="stat-card"><div class="label">Hôm nay</div><div class="value blue" id="statToday">—</div></div>
-      <div class="stat-card"><div class="label">Hoa hồng đã nhập</div><div class="value green" id="statComm">—</div></div>
-      <div class="stat-card"><div class="label">Chưa có hoa hồng</div><div class="value gold" id="statPending">—</div></div>
+      <div class="stat-card"><div class="label">Tổng lượt convert</div><div class="value c-orange" id="statTotal">—</div></div>
+      <div class="stat-card"><div class="label">Hôm nay</div><div class="value c-blue" id="statToday">—</div></div>
+      <div class="stat-card"><div class="label">Tổng hoa hồng</div><div class="value c-orange" id="statComm">—</div></div>
+      <div class="stat-card"><div class="label">Tổng hoàn tiền</div><div class="value c-green" id="statCashback">—</div></div>
+      <div class="stat-card"><div class="label">Chưa thanh toán</div><div class="value c-gold" id="statUnpaid">—</div></div>
     </div>
 
     <div class="filters">
-      <input class="filter-input" type="text" id="searchInput" placeholder="🔍 Tìm link sản phẩm..." oninput="renderTable()" style="flex:1;min-width:160px" />
+      <input class="filter-input" type="text" id="searchInput" placeholder="🔍 Tìm tên sản phẩm, mã đơn..." oninput="renderTable()" style="flex:1;min-width:160px" />
       <input class="filter-input" type="date" id="dateFrom" oninput="renderTable()" />
       <input class="filter-input" type="date" id="dateTo" oninput="renderTable()" />
-      <select class="filter-input" id="channelFilter" onchange="renderTable()">
-        <option value="">Tất cả kênh</option>
-        <option value="facebook">Facebook</option>
-        <option value="instagram">Instagram</option>
-        <option value="tiktok">TikTok</option>
-        <option value="zalo">Zalo</option>
-        <option value="youtube">YouTube</option>
+      <select class="filter-input" id="statusFilter" onchange="renderTable()">
+        <option value="">Tất cả trạng thái</option>
+        <option value="unpaid">Chưa thanh toán</option>
+        <option value="paid">Đã thanh toán</option>
       </select>
     </div>
 
@@ -209,19 +224,22 @@
           <tr>
             <th>#</th>
             <th>Thời gian</th>
-            <th>Link sản phẩm</th>
+            <th>Tên sản phẩm</th>
             <th>Kênh</th>
+            <th>Mã đơn hàng</th>
             <th>Hoa hồng (đ)</th>
-            <th>Ghi chú</th>
+            <th>Hoàn tiền (đ)</th>
+            <th>Số tài khoản</th>
+            <th>Thanh toán</th>
             <th></th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
-      <div class="loading" id="loadingState">Đang tải dữ liệu...</div>
+      <div class="loading" id="loadingState">⏳ Đang tải dữ liệu...</div>
       <div class="empty-state" id="emptyState" style="display:none">
         <div class="icon">📭</div>
-        <p>Chưa có lượt convert nào.<br>Dùng tool để bắt đầu ghi nhận.</p>
+        <p>Chưa có lượt convert nào.</p>
       </div>
     </div>
   </div>
@@ -246,6 +264,7 @@
   });
   const db = firebase.firestore();
 
+  /* ── Auth ── */
   function doLogin() {
     if (document.getElementById('pwInput').value === PASS) {
       sessionStorage.setItem('tt_auth', '1');
@@ -257,40 +276,40 @@
       document.getElementById('pwInput').value = '';
     }
   }
+  function logout() { sessionStorage.removeItem('tt_auth'); if (unsubscribe) unsubscribe(); location.reload(); }
 
-  function logout() {
-    sessionStorage.removeItem('tt_auth');
-    if (unsubscribe) unsubscribe();
-    location.reload();
-  }
-
+  /* ── Firestore listener ── */
   function startListen() {
-    unsubscribe = db.collection('conversions')
-      .orderBy('time', 'desc')
-      .limit(500)
+    unsubscribe = db.collection('conversions').orderBy('time','desc').limit(500)
       .onSnapshot(snap => {
         allRecords = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
         document.getElementById('loadingState').style.display = 'none';
-        updateStats();
-        renderTable();
+        updateStats(); renderTable();
       }, err => {
-        document.getElementById('loadingState').textContent = '⚠️ Lỗi kết nối Firestore';
-        console.error(err);
+        document.getElementById('loadingState').textContent = '⚠️ Lỗi kết nối: ' + err.message;
       });
   }
 
-  function updateStats() {
-    const today = new Date().toDateString();
-    const todayN = allRecords.filter(r => {
-      const t = r.time ? r.time.toDate() : null;
-      return t && t.toDateString() === today;
-    }).length;
-    const totalComm = allRecords.reduce((s, r) => s + (parseFloat(r.commission) || 0), 0);
-    const pending = allRecords.filter(r => !r.commission).length;
-    document.getElementById('statTotal').textContent = allRecords.length;
-    document.getElementById('statToday').textContent = todayN;
-    document.getElementById('statComm').textContent = totalComm.toLocaleString('vi-VN') + 'đ';
-    document.getElementById('statPending').textContent = pending;
+  /* ── Helpers ── */
+  function calcCashback(comm) {
+    const c = parseFloat(comm);
+    if (!c || isNaN(c)) return null;
+    return Math.round(c * (1 - 0.11) * 0.80);
+  }
+
+  function extractName(url) {
+    if (!url) return '—';
+    try {
+      const u = new URL(url);
+      const path = decodeURIComponent(u.pathname);
+      // Pattern: /Ten-San-Pham-i.shopId.itemId
+      const m = path.match(/\/(.+)-i\.\d+\.\d+/);
+      if (m) return m[1].replace(/-/g, ' ').replace(/%/g,' ').trim();
+      // Fallback: last path segment
+      const parts = path.split('/').filter(p => p);
+      if (parts.length) return parts[parts.length-1].replace(/-/g,' ').slice(0,60);
+    } catch {}
+    return url.replace(/https?:\/\//,'').slice(0,50);
   }
 
   function fmtTime(ts) {
@@ -300,23 +319,35 @@
     return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()}<br>${p(d.getHours())}:${p(d.getMinutes())}`;
   }
 
-  function shortUrl(url) {
-    try {
-      const u = new URL(url);
-      const path = u.pathname.slice(0, 35);
-      return u.hostname.replace('www.','') + path + (u.pathname.length > 35 ? '…' : '');
-    } catch { return (url||'').slice(0, 45) + '…'; }
+  function fmtMoney(n) { return n != null ? n.toLocaleString('vi-VN') + 'đ' : '—'; }
+
+  /* ── Stats ── */
+  function updateStats() {
+    const today = new Date().toDateString();
+    const todayN = allRecords.filter(r => r.time && (r.time.toDate ? r.time.toDate() : new Date(r.time)).toDateString() === today).length;
+    const totalComm = allRecords.reduce((s,r) => s + (parseFloat(r.commission)||0), 0);
+    const totalCashback = allRecords.reduce((s,r) => s + (calcCashback(r.commission)||0), 0);
+    const unpaid = allRecords.filter(r => (r.paymentStatus||'unpaid') === 'unpaid' && r.commission).length;
+
+    document.getElementById('statTotal').textContent = allRecords.length;
+    document.getElementById('statToday').textContent = todayN;
+    document.getElementById('statComm').textContent = fmtMoney(totalComm);
+    document.getElementById('statCashback').textContent = fmtMoney(totalCashback);
+    document.getElementById('statUnpaid').textContent = unpaid;
   }
 
+  /* ── Table ── */
   function renderTable() {
-    const search = (document.getElementById('searchInput').value || '').toLowerCase();
+    const search = (document.getElementById('searchInput').value||'').toLowerCase();
     const dateFrom = document.getElementById('dateFrom').value;
     const dateTo = document.getElementById('dateTo').value;
-    const channel = document.getElementById('channelFilter').value;
+    const statusF = document.getElementById('statusFilter').value;
 
     const filtered = allRecords.filter(r => {
-      if (search && !(r.origin||'').toLowerCase().includes(search) && !(r.note||'').toLowerCase().includes(search)) return false;
-      if (channel && r.channel !== channel) return false;
+      const name = extractName(r.origin).toLowerCase();
+      const order = (r.orderCode||'').toLowerCase();
+      if (search && !name.includes(search) && !order.includes(search)) return false;
+      if (statusF && (r.paymentStatus||'unpaid') !== statusF) return false;
       if (r.time) {
         const d = (r.time.toDate ? r.time.toDate() : new Date(r.time)).toISOString().slice(0,10);
         if (dateFrom && d < dateFrom) return false;
@@ -328,66 +359,91 @@
     const tbody = document.getElementById('tableBody');
     const empty = document.getElementById('emptyState');
 
-    if (filtered.length === 0 && allRecords.length > 0) {
-      tbody.innerHTML = '';
-      empty.style.display = 'block';
-      empty.querySelector('p').innerHTML = 'Không tìm thấy kết quả phù hợp.';
-      return;
-    }
-    if (allRecords.length === 0) {
-      tbody.innerHTML = '';
-      empty.style.display = 'block';
-      empty.querySelector('p').innerHTML = 'Chưa có lượt convert nào.<br>Dùng tool để bắt đầu ghi nhận.';
-      return;
-    }
-    empty.style.display = 'none';
+    if (!allRecords.length) { tbody.innerHTML=''; empty.style.display='block'; empty.querySelector('p').textContent='Chưa có lượt convert nào.'; return; }
+    if (!filtered.length) { tbody.innerHTML=''; empty.style.display='block'; empty.querySelector('p').textContent='Không tìm thấy kết quả.'; return; }
+    empty.style.display='none';
 
-    tbody.innerHTML = filtered.map((r, i) => `
+    tbody.innerHTML = filtered.map((r,i) => {
+      const cashback = calcCashback(r.commission);
+      const status = r.paymentStatus || 'unpaid';
+      const productName = extractName(r.origin);
+      return `
       <tr>
-        <td style="color:var(--text2);font-size:0.73rem">${filtered.length - i}</td>
+        <td style="color:var(--text2);font-size:0.7rem">${filtered.length-i}</td>
         <td class="td-time">${fmtTime(r.time)}</td>
-        <td class="td-product"><a href="${r.origin||'#'}" target="_blank" title="${r.origin||''}">${shortUrl(r.origin||'')}</a></td>
+        <td class="td-product">
+          <span class="product-name" title="${productName}">${productName}</span>
+          <a class="product-link" href="${r.origin||'#'}" target="_blank">${(r.origin||'').replace(/https?:\/\//,'').slice(0,35)}…</a>
+        </td>
         <td><span class="tag ${r.channel||''}">${r.channel||'—'}</span></td>
         <td>
-          <input class="editable comm" type="number" placeholder="Nhập hoa hồng"
-            value="${r.commission||''}"
-            onchange="updateField('${r._id}','commission',this.value)" />
+          <input class="editable order" type="text" placeholder="Nhập mã đơn..."
+            value="${r.orderCode||''}"
+            onchange="updateField('${r._id}','orderCode',this.value)" />
         </td>
         <td>
-          <input class="editable" type="text" placeholder="Ghi chú..."
-            value="${r.note||''}"
-            onchange="updateField('${r._id}','note',this.value)" />
+          <input class="editable comm" type="number" placeholder="Hoa hồng"
+            value="${r.commission||''}"
+            onchange="updateField('${r._id}','commission',this.value);refreshRow(this)" />
+        </td>
+        <td>
+          ${cashback != null
+            ? `<span class="cashback-val">${cashback.toLocaleString('vi-VN')}đ</span>`
+            : `<span class="cashback-empty">Chưa nhập</span>`}
+        </td>
+        <td>
+          <input class="editable bank" type="text" placeholder="Số TK..."
+            value="${r.bankAccount||''}"
+            onchange="updateField('${r._id}','bankAccount',this.value)" />
+        </td>
+        <td>
+          <select class="status-select ${status}" onchange="updateStatus('${r._id}',this)">
+            <option value="unpaid" ${status==='unpaid'?'selected':''}>⏳ Chưa TT</option>
+            <option value="paid"   ${status==='paid'  ?'selected':''}>✅ Đã TT</option>
+          </select>
         </td>
         <td><button class="btn-del" onclick="deleteRecord('${r._id}')">✕</button></td>
-      </tr>
-    `).join('');
+      </tr>`;
+    }).join('');
+  }
+
+  function refreshRow(input) {
+    // Re-render to update cashback column after commission change
+    setTimeout(renderTable, 300);
   }
 
   async function updateField(id, field, value) {
-    try {
-      await db.collection('conversions').doc(id).update({ [field]: value });
-      showToast('✅ Đã lưu');
-    } catch(e) { showToast('⚠️ Lỗi lưu dữ liệu'); }
+    try { await db.collection('conversions').doc(id).update({ [field]: value }); showToast('✅ Đã lưu'); }
+    catch(e) { showToast('⚠️ Lỗi lưu'); }
+  }
+
+  async function updateStatus(id, sel) {
+    const val = sel.value;
+    sel.className = 'status-select ' + val;
+    try { await db.collection('conversions').doc(id).update({ paymentStatus: val }); showToast(val==='paid'?'✅ Đã thanh toán':'⏳ Chưa thanh toán'); }
+    catch(e) { showToast('⚠️ Lỗi cập nhật'); }
   }
 
   async function deleteRecord(id) {
-    if (!confirm('Xoá lượt convert này?')) return;
-    try {
-      await db.collection('conversions').doc(id).delete();
-      showToast('🗑 Đã xoá');
-    } catch(e) { showToast('⚠️ Lỗi xoá'); }
+    if (!confirm('Xoá đơn này?')) return;
+    try { await db.collection('conversions').doc(id).delete(); showToast('🗑 Đã xoá'); }
+    catch(e) { showToast('⚠️ Lỗi xoá'); }
   }
 
   function exportCSV() {
     if (!allRecords.length) { showToast('⚠️ Chưa có dữ liệu'); return; }
-    const header = ['STT','Thời gian','Link sản phẩm','Kênh','Hoa hồng','Ghi chú'];
+    const header = ['STT','Thời gian','Tên sản phẩm','Link','Kênh','Mã đơn hàng','Hoa hồng','Hoàn tiền','Số TK','Thanh toán'];
     const rows = allRecords.map((r,i) => [
       i+1,
       r.time ? (r.time.toDate ? r.time.toDate() : new Date(r.time)).toLocaleString('vi-VN') : '',
-      r.origin||'', r.channel||'', r.commission||'', r.note||''
+      extractName(r.origin), r.origin||'', r.channel||'',
+      r.orderCode||'', r.commission||'',
+      calcCashback(r.commission)||'',
+      r.bankAccount||'',
+      r.paymentStatus==='paid'?'Đã thanh toán':'Chưa thanh toán'
     ]);
-    const csv = [header,...rows].map(r => r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-    const blob = new Blob(['﻿'+csv], { type: 'text/csv;charset=utf-8' });
+    const csv = [header,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `thaotho_${new Date().toISOString().slice(0,10)}.csv`;
@@ -398,10 +454,10 @@
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
+    setTimeout(()=>t.classList.remove('show'), 2200);
   }
 
-  if (sessionStorage.getItem('tt_auth') === '1') {
+  if (sessionStorage.getItem('tt_auth')==='1') {
     document.getElementById('loginWrap').style.display = 'none';
     document.getElementById('dashboard').classList.add('show');
     startListen();
