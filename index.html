@@ -132,7 +132,6 @@
   const _aid = '17332610461';
   const _sid = 'facebook';
   const URL_RX = /(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/gi;
-  const GAS_PROXY = ''; // << DÁN URL GOOGLE APPS SCRIPT VÀO ĐÂY
 
   function _xu(text) {
     const m = (text || '').match(URL_RX) || [];
@@ -155,36 +154,6 @@
       if (m) return m[1].replace(/-/g, ' ').replace(/%[0-9a-f]{2}/gi, ' ').trim();
     } catch {}
     return '';
-  }
-
-  function isShortLink(url) {
-    return /shp\.ee|vn\.shp\.ee/i.test(url) && !/shopee\.vn\//i.test(url);
-  }
-
-  // Resolve link rút gọn → URL đầy đủ shopee.vn
-  async function resolveUrl(url) {
-    const abort = (ms) => { const c = new AbortController(); setTimeout(() => c.abort(), ms); return c; };
-
-    // Ưu tiên: Google Apps Script (server-side, vượt bot Shopee)
-    if (GAS_PROXY) {
-      try {
-        const c = abort(8000);
-        const r = await fetch(GAS_PROXY + '?url=' + encodeURIComponent(url), {signal: c.signal});
-        const d = await r.json();
-        if (d.url && /shopee\.vn\//i.test(d.url)) return d.url;
-      } catch {}
-    }
-
-    // Fallback: allorigins
-    try {
-      const c = abort(6000);
-      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url), {signal: c.signal});
-      const d = await r.json();
-      const fu = d.status && d.status.url;
-      if (fu && fu !== url && /shopee\.vn\//i.test(fu) && !/\/(mall|error|login)($|\/)/i.test(fu)) return fu;
-    } catch {}
-
-    return null;
   }
 
   async function logConversion(originUrl, affiliateLink) {
@@ -213,11 +182,10 @@
     }
   }
 
-  async function convertLink() {
+  function convertLink() {
     const text = document.getElementById('inputLink').value.trim();
     const err = document.getElementById('errorMsg');
     const res = document.getElementById('resultWrap');
-    const btn = document.querySelector('.btn-convert');
     err.classList.remove('show');
     res.classList.remove('show');
 
@@ -226,27 +194,11 @@
       err.classList.add('show');
       return;
     }
-    let url = _xu(text);
+    const url = _xu(text);
     if (!url) {
       err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ.';
       err.classList.add('show');
       return;
-    }
-
-    // Nếu là link rút gọn → resolve trước để tránh shope.ee/error_page
-    if (isShortLink(url)) {
-      btn.textContent = '⏳ Đang xử lý...';
-      btn.disabled = true;
-      const resolved = await resolveUrl(url);
-      btn.innerHTML = '⚡ Chuyển đổi';
-      btn.disabled = false;
-      if (resolved) {
-        url = resolved;
-      } else {
-        err.textContent = '⚠️ Không resolve được link rút gọn. Hãy mở link, copy URL đầy đủ từ trình duyệt rồi dán lại.';
-        err.classList.add('show');
-        return;
-      }
     }
 
     const link = _bl(url);
