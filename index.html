@@ -160,21 +160,34 @@
       + '&sub_id=' + _sid;
   }
 
+  function parseName(html) {
+    if (!html) return null;
+    const og = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i)
+             || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:title"/i);
+    if (og && og[1].length > 3) return og[1].trim();
+    const t = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+    if (t) return t[1].replace(/\s*[\|–\-].*$/i,'').trim();
+    return null;
+  }
+
   async function fetchProductName(url) {
+    // 1. corsproxy.io — follows redirects natively
     try {
-      const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-      const resp = await fetch(proxy);
-      const data = await resp.json();
-      const html = data.contents || '';
-      // Try og:title first
-      const og = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i)
-                || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:title"/i);
-      if (og) return og[1].trim();
-      // Fallback: <title>
-      const t = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-      if (t) return t[1].replace(/\s*[\|–\-].*$/i,'').trim();
+      const r = await fetch('https://corsproxy.io/?url=' + encodeURIComponent(url));
+      const html = await r.text();
+      const name = parseName(html);
+      if (name && name.length > 4) return name;
     } catch {}
-    // Fallback: extract from URL path
+
+    // 2. allorigins fallback
+    try {
+      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+      const d = await r.json();
+      const name = parseName(d.contents || '');
+      if (name && name.length > 4) return name;
+    } catch {}
+
+    // 3. URL path fallback
     try {
       const path = decodeURIComponent(new URL(url).pathname);
       const m = path.match(/\/(.+)-i\.\d+\.\d+/);
