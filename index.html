@@ -156,6 +156,21 @@
     return '';
   }
 
+  function isShortLink(url) {
+    return /shp\.ee|vn\.shp\.ee/i.test(url) && !/shopee\.vn\//i.test(url);
+  }
+
+  // Resolve link rút gọn → URL đầy đủ shopee.vn qua allorigins
+  async function resolveUrl(url) {
+    try {
+      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+      const d = await r.json();
+      const final = d.status && d.status.url;
+      if (final && /shopee\.vn\//i.test(final)) return final;
+    } catch {}
+    return null;
+  }
+
   async function logConversion(originUrl, affiliateLink) {
     try {
       await db.collection('conversions').add({
@@ -182,10 +197,11 @@
     }
   }
 
-  function convertLink() {
+  async function convertLink() {
     const text = document.getElementById('inputLink').value.trim();
     const err = document.getElementById('errorMsg');
     const res = document.getElementById('resultWrap');
+    const btn = document.querySelector('.btn-convert');
     err.classList.remove('show');
     res.classList.remove('show');
 
@@ -194,11 +210,27 @@
       err.classList.add('show');
       return;
     }
-    const url = _xu(text);
+    let url = _xu(text);
     if (!url) {
       err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ.';
       err.classList.add('show');
       return;
+    }
+
+    // Nếu là link rút gọn → resolve trước để tránh shope.ee/error_page
+    if (isShortLink(url)) {
+      btn.textContent = '⏳ Đang xử lý...';
+      btn.disabled = true;
+      const resolved = await resolveUrl(url);
+      btn.innerHTML = '⚡ Chuyển đổi';
+      btn.disabled = false;
+      if (resolved) {
+        url = resolved;
+      } else {
+        err.textContent = '⚠️ Không resolve được link rút gọn. Hãy mở link, copy URL đầy đủ từ trình duyệt rồi dán lại.';
+        err.classList.add('show');
+        return;
+      }
     }
 
     const link = _bl(url);
