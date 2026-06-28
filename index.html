@@ -147,31 +147,37 @@
       + '&sub_id=' + _sid;
   }
 
+  function isGenericTitle(t) {
+    if (!t) return true;
+    const low = t.toLowerCase();
+    return low.includes('shopee mall') || low === 'shopee' ||
+           low.includes('mua và bán') || low.includes('shopee.vn') ||
+           low.length < 4;
+  }
+
   async function fetchProductName(url) {
-    // 1. Microlink API — theo redirect, trả JSON sạch
-    try {
-      const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url));
-      const d = await r.json();
-      if (d.status === 'success' && d.data && d.data.title) {
-        return d.data.title.replace(/\s*[\|–\-].*$/i,'').trim();
-      }
-    } catch {}
-
-    // 2. JSONLink fallback
-    try {
-      const r = await fetch('https://jsonlink.io/api/extract?url=' + encodeURIComponent(url));
-      const d = await r.json();
-      if (d.title && d.title.length > 3) {
-        return d.title.replace(/\s*[\|–\-].*$/i,'').trim();
-      }
-    } catch {}
-
-    // 3. Trích từ URL path nếu là link đầy đủ
+    // 1. Trích thẳng từ URL path nếu là link đầy đủ shopee.vn
     try {
       const path = decodeURIComponent(new URL(url).pathname);
       const m = path.match(/\/(.+)-i\.\d+\.\d+/);
-      if (m) return m[1].replace(/-/g,' ').trim();
+      if (m) return m[1].replace(/-/g,' ').replace(/%[0-9a-f]{2}/gi,' ').trim();
     } catch {}
+
+    // 2. Microlink (có thể get tên từ shp.ee nếu không bị chặn)
+    try {
+      const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url) + '&force=true');
+      const d = await r.json();
+      const title = (d.data && d.data.title) ? d.data.title.replace(/\s*[\|–\-].*$/i,'').trim() : '';
+      if (!isGenericTitle(title)) return title;
+      // Nếu Microlink resolve được URL gốc, thử extract từ đó
+      const finalUrl = d.data && d.data.url;
+      if (finalUrl && finalUrl !== url) {
+        const path2 = decodeURIComponent(new URL(finalUrl).pathname);
+        const m2 = path2.match(/\/(.+)-i\.\d+\.\d+/);
+        if (m2) return m2[1].replace(/-/g,' ').trim();
+      }
+    } catch {}
+
     return '';
   }
 
