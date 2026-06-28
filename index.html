@@ -69,6 +69,31 @@
     .btn-copy:hover { background: #16a34a; }
     .btn-open { background: var(--orange); color: #fff; }
     .btn-open:hover { background: var(--orange2); }
+    .name-wrap {
+      display: none; margin-top: 14px;
+      background: rgba(245,200,66,0.06);
+      border: 1px solid rgba(245,200,66,0.25);
+      border-radius: 12px; padding: 14px;
+    }
+    .name-wrap label {
+      display: block; font-size: 0.8rem; color: var(--gold);
+      font-weight: 600; margin-bottom: 8px;
+    }
+    .name-row { display: flex; gap: 8px; }
+    .name-input {
+      flex: 1; background: var(--dark3);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+      padding: 10px 12px; color: var(--text); font-family: inherit;
+      font-size: 0.88rem; outline: none; transition: border-color 0.2s;
+    }
+    .name-input:focus { border-color: var(--gold); }
+    .btn-save {
+      flex: 0 0 auto; background: var(--gold); color: #000;
+      padding: 10px 18px; border-radius: 8px; font-weight: 700;
+      font-size: 0.85rem; border: none; cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-save:hover { background: #e0b830; }
     .tip {
       margin-top: 20px; padding: 12px 16px;
       background: rgba(245,200,66,0.05); border: 1px solid rgba(245,200,66,0.12);
@@ -108,12 +133,12 @@
       <button class="btn btn-copy" onclick="copyLink()">📋 Sao chép link</button>
       <button class="btn btn-open" onclick="openLink()">🛒 Mở Shopee</button>
     </div>
-    <div id="nameWrap" style="display:none;margin-top:14px;">
-      <div style="font-size:0.8rem;color:var(--text2);margin-bottom:6px;">Nhập tên sản phẩm để lưu vào quản lý:</div>
-      <div style="display:flex;gap:8px;">
-        <input id="nameField" type="text" placeholder="VD: Áo thun nam form rộng..."
-          style="flex:1;background:var(--dark3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;"/>
-        <button class="btn btn-copy" style="flex:0 0 auto;padding:10px 16px;border-radius:8px;" onclick="saveName()">Lưu</button>
+    <div class="name-wrap" id="nameWrap">
+      <label>✏️ Nhập tên sản phẩm để lưu vào quản lý:</label>
+      <div class="name-row">
+        <input id="nameField" class="name-input" type="text"
+          placeholder="VD: Áo thun nam form rộng..." />
+        <button class="btn-save" onclick="saveName()">Lưu</button>
       </div>
     </div>
   </div>
@@ -155,83 +180,29 @@
       + '&sub_id=' + _sid;
   }
 
+  // Trích tên từ URL đầy đủ shopee.vn/Ten-sp-i.xxx.yyy
   function nameFromUrl(u) {
     try {
       const path = decodeURIComponent(new URL(u).pathname);
       const m = path.match(/\/(.+)-i\.\d+\.\d+/);
-      if (m) return m[1].replace(/-/g,' ').replace(/%[0-9a-f]{2}/gi,' ').trim();
+      if (m) return m[1].replace(/-/g, ' ').replace(/%[0-9a-f]{2}/gi, ' ').trim();
     } catch {}
     return '';
   }
 
-  function isGenericTitle(t) {
-    if (!t) return true;
-    const low = t.toLowerCase().trim();
-    if (low.length < 4) return true;
-    const bad = ['shopee mall','shopee việt nam','shopee viet nam','shopee vietnam',
-                 'shopee | mua','shopee.vn','mua và bán','mua va ban',
-                 'shopee – mua','shopee - mua'];
-    if (bad.some(b => low.includes(b))) return true;
-    if (/^shopee\s*(–|-|\|)/.test(low)) return true;
-    if (low === 'shopee') return true;
-    return false;
-  }
-
-  async function fetchProductName(rawUrl) {
-    // Nếu là affiliate link của chính tool, giải mã origin_link
-    let url = rawUrl;
-    if (url.includes('s.shopee.vn/an_redir')) {
-      try {
-        const ol = new URL(url).searchParams.get('origin_link');
-        if (ol) url = decodeURIComponent(ol);
-      } catch {}
-    }
-
-    // 1. Trích thẳng từ URL path (link đầy đủ shopee.vn)
-    const n1 = nameFromUrl(url);
-    if (n1) return n1;
-
-    // 2. allorigins.win — theo HTTP redirect, trả final URL trong status.url
-    //    Link shp.ee/xxx → 302 → shopee.vn/Ten-sp-i.xxx.yyy  ← tên nằm ở đây
-    try {
-      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
-      const d = await r.json();
-      if (d.status && d.status.url) {
-        const n2 = nameFromUrl(d.status.url);
-        if (n2) return n2;
-      }
-      // Cũng parse og:title / og:url từ HTML
-      const html = d.contents || '';
-      const ogUrl = (html.match(/<meta[^>]+property="og:url"[^>]+content="([^"]+)"/i) || [])[1];
-      if (ogUrl) { const n3 = nameFromUrl(ogUrl); if (n3) return n3; }
-      const ogTitle = (html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i) || [])[1];
-      if (ogTitle && !isGenericTitle(ogTitle)) return ogTitle.replace(/\s*[\|–\-].*$/i,'').trim();
-    } catch {}
-
-    // 3. Microlink fallback
-    try {
-      const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url));
-      const d = await r.json();
-      if (d.status === 'success' && d.data) {
-        const title = (d.data.title || '').replace(/\s*[\|–\-].*$/i,'').trim();
-        if (!isGenericTitle(title)) return title;
-        const n4 = nameFromUrl(d.data.url || '');
-        if (n4) return n4;
-      }
-    } catch {}
-
-    return '';
+  // Kiểm tra link có phải URL đầy đủ có tên trong path không
+  function isFullProductUrl(url) {
+    return /shopee\.vn\/.+-i\.\d+\.\d+/.test(url);
   }
 
   let _docRef = null;
 
-  async function logConversion(originUrl, affiliateLink) {
+  async function logConversion(originUrl, affiliateLink, productName) {
     try {
-      // Lưu trước với tên rỗng, lấy docRef
       _docRef = await db.collection('conversions').add({
         time: firebase.firestore.FieldValue.serverTimestamp(),
         origin: originUrl,
-        productName: '',
+        productName: productName,
         affiliate: affiliateLink,
         channel: _sid,
         orderCode: '',
@@ -239,28 +210,20 @@
         bankAccount: '',
         paymentStatus: 'unpaid'
       });
-      // Fetch tên song song, update khi có
-      const productName = await fetchProductName(originUrl);
-      if (productName) {
-        await _docRef.update({ productName });
-        document.getElementById('nameWrap').style.display = 'none';
-      } else {
-        // Không lấy được tên tự động → hiện ô nhập tay
-        document.getElementById('nameWrap').style.display = 'block';
-        document.getElementById('nameField').focus();
-      }
     } catch(e) { console.warn('Log error:', e); }
   }
 
   async function saveName() {
     const name = document.getElementById('nameField').value.trim();
-    if (!name || !_docRef) return;
-    try {
-      await _docRef.update({ productName: name });
-      document.getElementById('nameWrap').style.display = 'none';
-      document.getElementById('nameField').value = '';
-      showToast('✅ Đã lưu tên sản phẩm!');
-    } catch(e) { console.warn('saveName error:', e); }
+    if (!name) return;
+    if (_docRef) {
+      try {
+        await _docRef.update({ productName: name });
+      } catch(e) { console.warn('saveName error:', e); }
+    }
+    document.getElementById('nameWrap').style.display = 'none';
+    document.getElementById('nameField').value = '';
+    showToast('✅ Đã lưu tên sản phẩm!');
   }
 
   async function pasteLink() {
@@ -277,17 +240,39 @@
     const text = document.getElementById('inputLink').value.trim();
     const err = document.getElementById('errorMsg');
     const res = document.getElementById('resultWrap');
-    err.classList.remove('show'); res.classList.remove('show');
+    err.classList.remove('show');
+    res.classList.remove('show');
     document.getElementById('nameWrap').style.display = 'none';
     document.getElementById('nameField').value = '';
-    if (!text) { err.textContent = '⚠️ Vui lòng dán link Shopee trước.'; err.classList.add('show'); return; }
+    _docRef = null;
+
+    if (!text) {
+      err.textContent = '⚠️ Vui lòng dán link Shopee trước.';
+      err.classList.add('show');
+      return;
+    }
     const url = _xu(text);
-    if (!url) { err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ.'; err.classList.add('show'); return; }
+    if (!url) {
+      err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ.';
+      err.classList.add('show');
+      return;
+    }
+
     const link = _bl(url);
     document.getElementById('resultBox').textContent = link;
     res.classList.add('show');
     window._L = link;
-    logConversion(url, link);
+
+    // Nếu là link đầy đủ có tên trong URL → trích tên tự động
+    // Nếu là link rút gọn (shp.ee, s.shopee.vn/xxx...) → hỏi tên ngay
+    const autoName = nameFromUrl(url);
+    if (autoName) {
+      logConversion(url, link, autoName);
+    } else {
+      logConversion(url, link, '');
+      document.getElementById('nameWrap').style.display = 'block';
+      setTimeout(() => document.getElementById('nameField').focus(), 50);
+    }
   }
 
   function copyLink() {
