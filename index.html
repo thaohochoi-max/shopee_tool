@@ -147,6 +147,15 @@
       + '&sub_id=' + _sid;
   }
 
+  function nameFromUrl(u) {
+    try {
+      const path = decodeURIComponent(new URL(u).pathname);
+      const m = path.match(/\/(.+)-i\.\d+\.\d+/);
+      if (m) return m[1].replace(/-/g,' ').replace(/%[0-9a-f]{2}/gi,' ').trim();
+    } catch {}
+    return '';
+  }
+
   function isGenericTitle(t) {
     if (!t) return true;
     const low = t.toLowerCase();
@@ -155,26 +164,46 @@
            low.length < 4;
   }
 
-  async function fetchProductName(url) {
-    // 1. Trích thẳng từ URL path nếu là link đầy đủ shopee.vn
+  async function fetchProductName(rawUrl) {
+    // Nếu là affiliate link của chính tool, giải mã origin_link
+    let url = rawUrl;
+    if (url.includes('s.shopee.vn/an_redir')) {
+      try {
+        const ol = new URL(url).searchParams.get('origin_link');
+        if (ol) url = decodeURIComponent(ol);
+      } catch {}
+    }
+
+    // 1. Trích thẳng từ URL path (link đầy đủ shopee.vn)
+    const n1 = nameFromUrl(url);
+    if (n1) return n1;
+
+    // 2. allorigins.win — theo HTTP redirect, trả final URL trong status.url
+    //    Link shp.ee/xxx → 302 → shopee.vn/Ten-sp-i.xxx.yyy  ← tên nằm ở đây
     try {
-      const path = decodeURIComponent(new URL(url).pathname);
-      const m = path.match(/\/(.+)-i\.\d+\.\d+/);
-      if (m) return m[1].replace(/-/g,' ').replace(/%[0-9a-f]{2}/gi,' ').trim();
+      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+      const d = await r.json();
+      if (d.status && d.status.url) {
+        const n2 = nameFromUrl(d.status.url);
+        if (n2) return n2;
+      }
+      // Cũng parse og:title / og:url từ HTML
+      const html = d.contents || '';
+      const ogUrl = (html.match(/<meta[^>]+property="og:url"[^>]+content="([^"]+)"/i) || [])[1];
+      if (ogUrl) { const n3 = nameFromUrl(ogUrl); if (n3) return n3; }
+      const ogTitle = (html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i) || [])[1];
+      if (ogTitle && !isGenericTitle(ogTitle)) return ogTitle.replace(/\s*[\|–\-].*$/i,'').trim();
     } catch {}
 
-    // 2. Microlink (có thể get tên từ shp.ee nếu không bị chặn)
+    // 3. Microlink fallback
     try {
-      const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url) + '&force=true');
+      const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url));
       const d = await r.json();
-      const title = (d.data && d.data.title) ? d.data.title.replace(/\s*[\|–\-].*$/i,'').trim() : '';
-      if (!isGenericTitle(title)) return title;
-      // Nếu Microlink resolve được URL gốc, thử extract từ đó
-      const finalUrl = d.data && d.data.url;
-      if (finalUrl && finalUrl !== url) {
-        const path2 = decodeURIComponent(new URL(finalUrl).pathname);
-        const m2 = path2.match(/\/(.+)-i\.\d+\.\d+/);
-        if (m2) return m2[1].replace(/-/g,' ').trim();
+      if (d.status === 'success' && d.data) {
+        const title = (d.data.title || '').replace(/\s*[\|–\-].*$/i,'').trim();
+        if (!isGenericTitle(title)) return title;
+        const n4 = nameFromUrl(d.data.url || '');
+        if (n4) return n4;
       }
     } catch {}
 
