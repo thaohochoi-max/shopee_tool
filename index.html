@@ -108,6 +108,14 @@
       <button class="btn btn-copy" onclick="copyLink()">📋 Sao chép link</button>
       <button class="btn btn-open" onclick="openLink()">🛒 Mở Shopee</button>
     </div>
+    <div id="nameWrap" style="display:none;margin-top:14px;">
+      <div style="font-size:0.8rem;color:var(--text2);margin-bottom:6px;">Nhập tên sản phẩm để lưu vào quản lý:</div>
+      <div style="display:flex;gap:8px;">
+        <input id="nameField" type="text" placeholder="VD: Áo thun nam form rộng..."
+          style="flex:1;background:var(--dark3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;"/>
+        <button class="btn btn-copy" style="flex:0 0 auto;padding:10px 16px;border-radius:8px;" onclick="saveName()">Lưu</button>
+      </div>
+    </div>
   </div>
   <div class="tip">
     <strong>Cách dùng:</strong> Dán link Shopee bất kỳ (kể cả link rút gọn shp.ee), nhấn <strong>Chuyển đổi</strong> — mua hàng qua link đó để nhận cashback và voucher.
@@ -158,10 +166,15 @@
 
   function isGenericTitle(t) {
     if (!t) return true;
-    const low = t.toLowerCase();
-    return low.includes('shopee mall') || low === 'shopee' ||
-           low.includes('mua và bán') || low.includes('shopee.vn') ||
-           low.length < 4;
+    const low = t.toLowerCase().trim();
+    if (low.length < 4) return true;
+    const bad = ['shopee mall','shopee việt nam','shopee viet nam','shopee vietnam',
+                 'shopee | mua','shopee.vn','mua và bán','mua va ban',
+                 'shopee – mua','shopee - mua'];
+    if (bad.some(b => low.includes(b))) return true;
+    if (/^shopee\s*(–|-|\|)/.test(low)) return true;
+    if (low === 'shopee') return true;
+    return false;
   }
 
   async function fetchProductName(rawUrl) {
@@ -210,13 +223,15 @@
     return '';
   }
 
+  let _docRef = null;
+
   async function logConversion(originUrl, affiliateLink) {
     try {
-      const productName = await fetchProductName(originUrl);
-      await db.collection('conversions').add({
+      // Lưu trước với tên rỗng, lấy docRef
+      _docRef = await db.collection('conversions').add({
         time: firebase.firestore.FieldValue.serverTimestamp(),
         origin: originUrl,
-        productName: productName,
+        productName: '',
         affiliate: affiliateLink,
         channel: _sid,
         orderCode: '',
@@ -224,7 +239,28 @@
         bankAccount: '',
         paymentStatus: 'unpaid'
       });
+      // Fetch tên song song, update khi có
+      const productName = await fetchProductName(originUrl);
+      if (productName) {
+        await _docRef.update({ productName });
+        document.getElementById('nameWrap').style.display = 'none';
+      } else {
+        // Không lấy được tên tự động → hiện ô nhập tay
+        document.getElementById('nameWrap').style.display = 'block';
+        document.getElementById('nameField').focus();
+      }
     } catch(e) { console.warn('Log error:', e); }
+  }
+
+  async function saveName() {
+    const name = document.getElementById('nameField').value.trim();
+    if (!name || !_docRef) return;
+    try {
+      await _docRef.update({ productName: name });
+      document.getElementById('nameWrap').style.display = 'none';
+      document.getElementById('nameField').value = '';
+      showToast('✅ Đã lưu tên sản phẩm!');
+    } catch(e) { console.warn('saveName error:', e); }
   }
 
   async function pasteLink() {
@@ -242,6 +278,8 @@
     const err = document.getElementById('errorMsg');
     const res = document.getElementById('resultWrap');
     err.classList.remove('show'); res.classList.remove('show');
+    document.getElementById('nameWrap').style.display = 'none';
+    document.getElementById('nameField').value = '';
     if (!text) { err.textContent = '⚠️ Vui lòng dán link Shopee trước.'; err.classList.add('show'); return; }
     const url = _xu(text);
     if (!url) { err.textContent = '⚠️ Không tìm thấy link Shopee hợp lệ.'; err.classList.add('show'); return; }
@@ -275,6 +313,9 @@
 
   document.getElementById('inputLink').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); convertLink(); }
+  });
+  document.getElementById('nameField').addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveName();
   });
 </script>
 </body>
