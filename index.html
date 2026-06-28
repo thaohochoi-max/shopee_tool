@@ -69,31 +69,6 @@
     .btn-copy:hover { background: #16a34a; }
     .btn-open { background: var(--orange); color: #fff; }
     .btn-open:hover { background: var(--orange2); }
-    .name-wrap {
-      display: none; margin-top: 14px;
-      background: rgba(245,200,66,0.06);
-      border: 1px solid rgba(245,200,66,0.25);
-      border-radius: 12px; padding: 14px;
-    }
-    .name-wrap label {
-      display: block; font-size: 0.8rem; color: var(--gold);
-      font-weight: 600; margin-bottom: 8px;
-    }
-    .name-row { display: flex; gap: 8px; }
-    .name-input {
-      flex: 1; background: var(--dark3);
-      border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
-      padding: 10px 12px; color: var(--text); font-family: inherit;
-      font-size: 0.88rem; outline: none; transition: border-color 0.2s;
-    }
-    .name-input:focus { border-color: var(--gold); }
-    .btn-save {
-      flex: 0 0 auto; background: var(--gold); color: #000;
-      padding: 10px 18px; border-radius: 8px; font-weight: 700;
-      font-size: 0.85rem; border: none; cursor: pointer;
-      font-family: inherit;
-    }
-    .btn-save:hover { background: #e0b830; }
     .tip {
       margin-top: 20px; padding: 12px 16px;
       background: rgba(245,200,66,0.05); border: 1px solid rgba(245,200,66,0.12);
@@ -133,17 +108,9 @@
       <button class="btn btn-copy" onclick="copyLink()">📋 Sao chép link</button>
       <button class="btn btn-open" onclick="openLink()">🛒 Mở Shopee</button>
     </div>
-    <div class="name-wrap" id="nameWrap">
-      <label>✏️ Nhập tên sản phẩm để lưu vào quản lý:</label>
-      <div class="name-row">
-        <input id="nameField" class="name-input" type="text"
-          placeholder="VD: Áo thun nam form rộng..." />
-        <button class="btn-save" onclick="saveName()">Lưu</button>
-      </div>
-    </div>
   </div>
   <div class="tip">
-    <strong>Cách dùng:</strong> Dán link Shopee bất kỳ (kể cả link rút gọn shp.ee), nhấn <strong>Chuyển đổi</strong> — mua hàng qua link đó để nhận cashback và voucher.
+    <strong>Cách dùng:</strong> Dán link Shopee bất kỳ (kể cả link rút gọn shp.ee, vn.shp.ee), nhấn <strong>Chuyển đổi</strong> — mua hàng qua link đó để nhận voucher độc quyền.
   </div>
 </div>
 <footer>Thảo Thỏ - Deal Shopee</footer>
@@ -180,7 +147,6 @@
       + '&sub_id=' + _sid;
   }
 
-  // Trích tên từ URL đầy đủ shopee.vn/Ten-sp-i.xxx.yyy
   function nameFromUrl(u) {
     try {
       const path = decodeURIComponent(new URL(u).pathname);
@@ -190,19 +156,12 @@
     return '';
   }
 
-  // Kiểm tra link có phải URL đầy đủ có tên trong path không
-  function isFullProductUrl(url) {
-    return /shopee\.vn\/.+-i\.\d+\.\d+/.test(url);
-  }
-
-  let _docRef = null;
-
-  async function logConversion(originUrl, affiliateLink, productName) {
+  async function logConversion(originUrl, affiliateLink) {
     try {
-      _docRef = await db.collection('conversions').add({
+      await db.collection('conversions').add({
         time: firebase.firestore.FieldValue.serverTimestamp(),
         origin: originUrl,
-        productName: productName,
+        productName: nameFromUrl(originUrl),
         affiliate: affiliateLink,
         channel: _sid,
         orderCode: '',
@@ -211,19 +170,6 @@
         paymentStatus: 'unpaid'
       });
     } catch(e) { console.warn('Log error:', e); }
-  }
-
-  async function saveName() {
-    const name = document.getElementById('nameField').value.trim();
-    if (!name) return;
-    if (_docRef) {
-      try {
-        await _docRef.update({ productName: name });
-      } catch(e) { console.warn('saveName error:', e); }
-    }
-    document.getElementById('nameWrap').style.display = 'none';
-    document.getElementById('nameField').value = '';
-    showToast('✅ Đã lưu tên sản phẩm!');
   }
 
   async function pasteLink() {
@@ -242,9 +188,6 @@
     const res = document.getElementById('resultWrap');
     err.classList.remove('show');
     res.classList.remove('show');
-    document.getElementById('nameWrap').style.display = 'none';
-    document.getElementById('nameField').value = '';
-    _docRef = null;
 
     if (!text) {
       err.textContent = '⚠️ Vui lòng dán link Shopee trước.';
@@ -262,17 +205,7 @@
     document.getElementById('resultBox').textContent = link;
     res.classList.add('show');
     window._L = link;
-
-    // Nếu là link đầy đủ có tên trong URL → trích tên tự động
-    // Nếu là link rút gọn (shp.ee, s.shopee.vn/xxx...) → hỏi tên ngay
-    const autoName = nameFromUrl(url);
-    if (autoName) {
-      logConversion(url, link, autoName);
-    } else {
-      logConversion(url, link, '');
-      document.getElementById('nameWrap').style.display = 'block';
-      setTimeout(() => document.getElementById('nameField').focus(), 50);
-    }
+    logConversion(url, link);
   }
 
   function copyLink() {
@@ -298,9 +231,6 @@
 
   document.getElementById('inputLink').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); convertLink(); }
-  });
-  document.getElementById('nameField').addEventListener('keydown', e => {
-    if (e.key === 'Enter') saveName();
   });
 </script>
 </body>
