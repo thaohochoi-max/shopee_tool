@@ -160,23 +160,36 @@
       + '&sub_id=' + _sid;
   }
 
-  function extractProductName(url) {
+  async function fetchProductName(url) {
+    try {
+      const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+      const resp = await fetch(proxy);
+      const data = await resp.json();
+      const html = data.contents || '';
+      // Try og:title first
+      const og = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i)
+                || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:title"/i);
+      if (og) return og[1].trim();
+      // Fallback: <title>
+      const t = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+      if (t) return t[1].replace(/\s*[\|–\-].*$/i,'').trim();
+    } catch {}
+    // Fallback: extract from URL path
     try {
       const path = decodeURIComponent(new URL(url).pathname);
       const m = path.match(/\/(.+)-i\.\d+\.\d+/);
       if (m) return m[1].replace(/-/g,' ').trim();
-      const parts = path.split('/').filter(p=>p);
-      if (parts.length) return parts[parts.length-1].replace(/-/g,' ').slice(0,80);
     } catch {}
     return '';
   }
 
   async function logConversion(originUrl, affiliateLink) {
     try {
+      const productName = await fetchProductName(originUrl);
       await db.collection('conversions').add({
         time: firebase.firestore.FieldValue.serverTimestamp(),
         origin: originUrl,
-        productName: extractProductName(originUrl),
+        productName: productName,
         affiliate: affiliateLink,
         channel: _sid,
         orderCode: '',

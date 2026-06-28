@@ -373,8 +373,8 @@
         <td class="td-time">${fmtTime(r.time)}</td>
         <td class="td-product">
           <input class="editable" type="text" style="width:160px;font-weight:600"
-            placeholder="Nhập tên sản phẩm..."
-            value="${r.productName || productName}"
+            placeholder="Đang lấy tên..."
+            value="${r.productName || productName || ''}"
             onchange="updateField('${r._id}','productName',this.value)" />
           <a class="product-link" href="${r.origin||'#'}" target="_blank">${(r.origin||'').replace(/https?:\/\//,'').slice(0,35)}…</a>
         </td>
