@@ -42,29 +42,6 @@
     textarea:focus { border-color: var(--orange); }
     textarea::placeholder { color: var(--text2); opacity: 0.6; }
 
-    .platform-label {
-      font-size: 0.75rem; color: var(--text2); margin-bottom: 8px;
-      font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-    }
-    .platform-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 8px; margin-bottom: 14px;
-    }
-    .platform-btn {
-      background: var(--dark3); border: 2px solid rgba(255,255,255,0.07);
-      border-radius: 10px; padding: 10px 4px; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      transition: all 0.18s; text-align: center;
-    }
-    .platform-btn:hover { border-color: rgba(255,255,255,0.2); background: var(--dark4); }
-    .platform-btn.active.fb  { border-color: #1877f2; background: rgba(24,119,242,0.13); }
-    .platform-btn.active.ig  { border-color: #e1306c; background: rgba(225,48,108,0.13); }
-    .platform-btn.active.tt  { border-color: #69c9d0; background: rgba(105,201,208,0.11); }
-    .platform-btn.active.zl  { border-color: #0068ff; background: rgba(0,104,255,0.13); }
-    .platform-btn .p-icon { font-size: 1.35rem; line-height: 1; }
-    .platform-btn .p-name { font-size: 0.7rem; font-weight: 700; color: var(--text2); }
-    .platform-btn.active .p-name { color: var(--text); }
-
     .btn-row { display: flex; gap: 10px; margin-bottom: 20px; }
     .btn {
       flex: 1; padding: 12px 14px; border-radius: 10px; border: none;
@@ -133,26 +110,6 @@
 
   <textarea id="inputLink" placeholder="Dán link Shopee vào đây...&#10;VD: https://shopee.vn/... hoặc shp.ee/..."></textarea>
 
-  <div class="platform-label">Chọn nền tảng nhận voucher</div>
-  <div class="platform-grid">
-    <button class="platform-btn fb active" data-platform="facebook" onclick="selectPlatform(this)">
-      <span class="p-icon">🔵</span>
-      <span class="p-name">Facebook</span>
-    </button>
-    <button class="platform-btn ig" data-platform="instagram" onclick="selectPlatform(this)">
-      <span class="p-icon">📸</span>
-      <span class="p-name">Instagram</span>
-    </button>
-    <button class="platform-btn tt" data-platform="tiktok" onclick="selectPlatform(this)">
-      <span class="p-icon">🎵</span>
-      <span class="p-name">TikTok</span>
-    </button>
-    <button class="platform-btn zl" data-platform="zalo" onclick="selectPlatform(this)">
-      <span class="p-icon">💬</span>
-      <span class="p-name">Zalo</span>
-    </button>
-  </div>
-
   <div class="btn-row">
     <button class="btn btn-paste" onclick="pasteLink()">📋 Dán</button>
     <button class="btn btn-convert" id="btnConvert" onclick="convertLink()">⚡ Chuyển đổi</button>
@@ -188,21 +145,10 @@
   });
   const db = firebase.firestore();
 
+  const _aid = '17332610461';
+  const _sid = 'facebook';
   const GAS_PROXY = 'https://script.google.com/macros/s/AKfycbz5pLKH3qeVZntGG0GxifsvljZ0itszf9KKfnunxFMybaeh6-Gk60vvHiRspZf-zbBQEA/exec';
   const URL_RX = /(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?/gi;
-  let _platform = 'facebook';
-
-  function selectPlatform(el) {
-    document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
-    el.classList.add('active');
-    _platform = el.dataset.platform;
-  }
-
-  function _rand(n) {
-    let s = '';
-    while (s.length < n) s += Math.random().toString(36).slice(2);
-    return s.slice(0, n);
-  }
 
   function _xu(text) {
     const m = (text || '').match(URL_RX) || [];
@@ -211,36 +157,11 @@
     return f.startsWith('http') ? f : 'https://' + f;
   }
 
-  function buildLink(url, platform) {
-    try {
-      const u = new URL(url);
-      switch (platform) {
-        case 'facebook':
-          u.searchParams.set('smtt', '0.0.3');
-          u.searchParams.set('fbclid', _rand(20));
-          break;
-        case 'instagram':
-          u.searchParams.set('smtt', '0.0.9');
-          u.searchParams.set('igshid', _rand(20));
-          break;
-        case 'tiktok':
-          u.searchParams.set('smtt', '0.0.7');
-          u.searchParams.set('ttclid', _rand(20));
-          break;
-        case 'zalo':
-          u.searchParams.set('smtt', '0.0.5');
-          break;
-      }
-      return u.toString();
-    } catch {
-      const sep = url.includes('?') ? '&' : '?';
-      const smttMap = {facebook:'0.0.3', instagram:'0.0.9', tiktok:'0.0.7', zalo:'0.0.5'};
-      let link = url + sep + 'smtt=' + smttMap[platform];
-      if (platform === 'facebook')  link += '&fbclid=' + _rand(20);
-      if (platform === 'instagram') link += '&igshid=' + _rand(20);
-      if (platform === 'tiktok')    link += '&ttclid=' + _rand(20);
-      return link;
-    }
+  function _bl(url) {
+    return 'https://s.shopee.vn/an_redir'
+      + '?origin_link=' + encodeURIComponent(url)
+      + '&affiliate_id=' + _aid
+      + '&sub_id=' + _sid;
   }
 
   function isShortLink(url) {
@@ -316,11 +237,11 @@
       url = resolved;
     }
 
-    const link = buildLink(url, _platform);
+    const link = _bl(url);
     document.getElementById('resultBox').textContent = link;
     res.classList.add('show');
     window._L = link;
-    logConversion(url, link, _platform);
+    logConversion(url, link, _sid);
   }
 
   function copyLink() {
